@@ -1,0 +1,27 @@
+{
+  "id": "hamlet",
+  "title": "Hamlet",
+  "summary": "Prince Hamlet returns home to find his father murdered, his mother remarried to his uncle, and a court steeped in espionage. Torn between revenge and moral doubt, he stages a play to expose the king, leading to a cascade of mistaken killings and the collapse of Denmark's royal line.",
+  "graph": {
+    "nodes": [
+      { "id": "hamlet", "label": "Hamlet", "group": "royalty" },
+      { "id": "claudius", "label": "Claudius", "group": "royalty" },
+      { "id": "gertrude", "label": "Gertrude", "group": "royalty" },
+      { "id": "ophelia", "label": "Ophelia", "group": "nobility" },
+      { "id": "laertes", "label": "Laertes", "group": "nobility" },
+      { "id": "polonius", "label": "Polonius", "group": "court" },
+      { "id": "horatio", "label": "Horatio", "group": "scholar" },
+      { "id": "ghost", "label": "Ghost", "group": "supernatural" }
+    ],
+    "edges": [
+      { "source": "claudius", "target": "hamlet", "relationship": "Uncle/King" },
+      { "source": "gertrude", "target": "hamlet", "relationship": "Mother" },
+      { "source": "hamlet", "target": "ophelia", "relationship": "Love" },
+      { "source": "laertes", "target": "ophelia", "relationship": "Siblings" },
+      { "source": "polonius", "target": "ophelia", "relationship": "Father" },
+      { "source": "ghost", "target": "hamlet", "relationship": "Urges Revenge" },
+      { "source": "hamlet", "target": "claudius", "relationship": "Suspects Murder" },
+      { "source": "claudius", "target": "laertes", "relationship": "Plots" }
+    ]
+  }
+}

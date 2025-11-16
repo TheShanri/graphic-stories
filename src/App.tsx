@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { max, scaleBand, scaleLinear, ticks } from 'd3'
+import InteractiveGraph, { type StoryGraph } from './components/InteractiveGraph'
 
 export type Story = {
   id: string
@@ -12,9 +12,11 @@ export type Story = {
   dataSources: string[]
 }
 
-type ChartDatum = {
-  label: string
-  value: number
+type StoryPayload = {
+  id: string
+  title: string
+  summary: string
+  graph: StoryGraph
 }
 
 const STORIES: Story[] = [
@@ -60,86 +62,64 @@ const STORIES: Story[] = [
   },
 ]
 
-const STORY_VISUALS: Record<string, ChartDatum[]> = {
-  macbeth: [
-    { label: 'Prophecy', value: 38 },
-    { label: 'Ambition', value: 54 },
-    { label: 'Guilt', value: 72 },
-    { label: 'Specters', value: 44 },
-    { label: 'Fallout', value: 58 },
-  ],
-  hamlet: [
-    { label: 'Grief', value: 64 },
-    { label: 'Plots', value: 52 },
-    { label: 'Soliloquy', value: 80 },
-    { label: 'Espionage', value: 48 },
-    { label: 'Reckoning', value: 70 },
-  ],
-  'king-lear': [
-    { label: 'Division', value: 60 },
-    { label: 'Storm', value: 76 },
-    { label: 'Disguise', value: 42 },
-    { label: 'Loss', value: 68 },
-    { label: 'Restoration', value: 50 },
-  ],
-  tempest: [
-    { label: 'Tempest', value: 55 },
-    { label: 'Alchemy', value: 62 },
-    { label: 'Spirits', value: 48 },
-    { label: 'Revels', value: 70 },
-    { label: 'Release', value: 57 },
-  ],
-}
-
-const STORY_COLORS: Record<string, { accent: string; glow: string }> = {
-  macbeth: { accent: '#ff8a7a', glow: '#5c1d2c' },
-  hamlet: { accent: '#8ce5ff', glow: '#1b3651' },
-  'king-lear': { accent: '#ffd580', glow: '#5a3810' },
-  tempest: { accent: '#a7f0ba', glow: '#1b4437' },
-}
-
-const FALLBACK_PALETTE = { accent: '#bd8cff', glow: '#2d2250' }
-
-const CHART_SIZE = {
-  width: 780,
-  height: 460,
-  margin: { top: 48, right: 48, bottom: 80, left: 72 },
-}
-
-const INNER_WIDTH = CHART_SIZE.width - CHART_SIZE.margin.left - CHART_SIZE.margin.right
-const INNER_HEIGHT = CHART_SIZE.height - CHART_SIZE.margin.top - CHART_SIZE.margin.bottom
-const Y_TICK_COUNT = 4
-
 function App() {
   const [activeId, setActiveId] = useState(STORIES[0].id)
+  const [storyPayloads, setStoryPayloads] = useState<Record<string, StoryPayload>>({})
+  const [storyErrors, setStoryErrors] = useState<Record<string, string>>({})
+  const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
+
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
-  const chartData = useMemo(() => STORY_VISUALS[activeId] ?? [], [activeId])
-  const palette = STORY_COLORS[activeId] ?? FALLBACK_PALETTE
+  const activePayload = storyPayloads[activeId]
+  const isLoadingActiveStory = loadingStoryId === activeId && !activePayload
+  const activeStoryError = storyErrors[activeId]
 
-  const yMax = useMemo(() => {
-    if (!chartData.length) {
-      return 1
+  useEffect(() => {
+    const targetId = activeId
+    if (storyPayloads[targetId]) {
+      return
     }
-    const computed = max(chartData, (datum) => datum.value)
-    if (!Number.isFinite(computed)) {
-      return 1
+
+    let isCancelled = false
+    setLoadingStoryId(targetId)
+    setStoryErrors((prev) => {
+      const next = { ...prev }
+      delete next[targetId]
+      return next
+    })
+
+    fetch(`/json/${targetId}.json`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Unable to load ${targetId}.json`)
+        }
+        return response.json() as Promise<StoryPayload>
+      })
+      .then((payload) => {
+        if (isCancelled) {
+          return
+        }
+        setStoryPayloads((prev) => ({ ...prev, [targetId]: payload }))
+      })
+      .catch((error: Error) => {
+        if (isCancelled) {
+          return
+        }
+        setStoryErrors((prev) => ({ ...prev, [targetId]: error.message }))
+      })
+      .finally(() => {
+        if (isCancelled) {
+          return
+        }
+        setLoadingStoryId((current) => (current === targetId ? null : current))
+      })
+
+    return () => {
+      isCancelled = true
     }
-    return Math.max(1, computed)
-  }, [chartData])
+  }, [activeId, storyPayloads])
 
-  const yScale = useMemo(() => scaleLinear().domain([0, yMax]).range([INNER_HEIGHT, 0]).nice(4), [yMax])
-  const xScale = useMemo(
-    () => scaleBand<string>().domain(chartData.map((datum) => datum.label)).range([0, INNER_WIDTH]).padding(0.35),
-    [chartData],
-  )
-
-  const yTickValues = useMemo(() => {
-    const [start, stop] = yScale.domain()
-    return ticks(start, stop, Y_TICK_COUNT)
-  }, [yScale])
-
-  const gradientId = `${activeStory.id}-gradient`
-  const chartTitleId = `${activeStory.id}-chart-title`
+  const summaryText = activePayload?.summary ?? activeStory.description
+  const graphJson = activePayload?.graph ? JSON.stringify(activePayload.graph, null, 2) : null
 
   return (
     <div className="app-shell">
@@ -194,57 +174,15 @@ function App() {
         <section className="visualization-panel" aria-label="Visualization preview">
           <div className="visualization-frame">
             <div className="viz-surface">
-              <div className="viz-hint">Live visualization canvas</div>
-              <div className="viz-chart" role="img" aria-labelledby={chartTitleId}>
-                <svg viewBox={`0 0 ${CHART_SIZE.width} ${CHART_SIZE.height}`} preserveAspectRatio="xMidYMid meet">
-                  <title id={chartTitleId}>Boilerplate d3 sketch for {activeStory.title}</title>
-                  <defs>
-                    <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor={palette.accent} stopOpacity={0.95} />
-                      <stop offset="100%" stopColor={palette.glow} stopOpacity={0.85} />
-                    </linearGradient>
-                  </defs>
-                  <g transform={`translate(${CHART_SIZE.margin.left}, ${CHART_SIZE.margin.top})`}>
-                    <g className="viz-gridlines" aria-hidden="true">
-                      {yTickValues.map((tick) => (
-                        <g key={tick} transform={`translate(0, ${yScale(tick)})`}>
-                          <line x1={0} x2={INNER_WIDTH} />
-                          <text x={-18} dy="0.35em">
-                            {Math.round(tick)}
-                          </text>
-                        </g>
-                      ))}
-                    </g>
-                    <g className="viz-bars">
-                      {chartData.map((datum) => {
-                        const xPosition = xScale(datum.label) ?? 0
-                        const barHeight = INNER_HEIGHT - yScale(datum.value)
-                        return (
-                          <g key={datum.label} transform={`translate(${xPosition}, ${yScale(datum.value)})`}>
-                            <rect width={xScale.bandwidth()} height={barHeight} rx={12} fill={`url(#${gradientId})`}>
-                              <title>
-                                {datum.label}: {datum.value}
-                              </title>
-                            </rect>
-                            <text className="viz-value" x={xScale.bandwidth() / 2} y={-12}>
-                              {datum.value}
-                            </text>
-                          </g>
-                        )
-                      })}
-                    </g>
-                    <g className="viz-axis" transform={`translate(0, ${INNER_HEIGHT})`} aria-hidden="true">
-                      {chartData.map((datum) => {
-                        const xPosition = (xScale(datum.label) ?? 0) + xScale.bandwidth() / 2
-                        return (
-                          <text key={datum.label} x={xPosition} dy="2.5rem">
-                            {datum.label}
-                          </text>
-                        )
-                      })}
-                    </g>
-                  </g>
-                </svg>
+              <div className="viz-hint">Live network canvas</div>
+              <div className="viz-chart" role="img" aria-label={`Network graph for ${activeStory.title}`}>
+                {activePayload ? (
+                  <InteractiveGraph graph={activePayload.graph} />
+                ) : (
+                  <div className="viz-placeholder" aria-live="polite">
+                    {isLoadingActiveStory ? 'Loading story graph…' : 'Select a story to load its graph data.'}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -254,7 +192,11 @@ function App() {
               <h2>{activeStory.title}</h2>
               <p className="authors">{activeStory.authors}</p>
             </header>
-            <p className="story-description">{activeStory.description}</p>
+            {activeStoryError ? (
+              <p className="story-description error">{activeStoryError}</p>
+            ) : (
+              <p className="story-description">{summaryText}</p>
+            )}
             <dl className="data-points">
               <div>
                 <dt>Discipline</dt>
@@ -275,6 +217,24 @@ function App() {
                 </dd>
               </div>
             </dl>
+            <section className="graph-data-panel" aria-live="polite">
+              <div className="panel-header compact">
+                <div>
+                  <p className="eyebrow">LLM payload</p>
+                  <h3>Graph data</h3>
+                </div>
+                {isLoadingActiveStory && <span className="loading-pill">Loading…</span>}
+              </div>
+              {graphJson ? (
+                <pre className="graph-json">{graphJson}</pre>
+              ) : (
+                <p className="graph-placeholder">
+                  {isLoadingActiveStory
+                    ? 'Fetching summary + graph object from the JSON knowledge base…'
+                    : 'Select a story to request its summary and graph.'}
+                </p>
+              )}
+            </section>
           </article>
         </section>
       </main>

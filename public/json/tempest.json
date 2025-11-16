@@ -1,0 +1,27 @@
+{
+  "id": "tempest",
+  "title": "The Tempest",
+  "summary": "Prospero conjures a storm to shipwreck his usurping brother and the King of Naples on the island where he rules with his daughter Miranda. With the help of airy Ariel and rebellious Caliban, he orchestrates reckonings that end in forgiveness, new alliances, and the release of his magic.",
+  "graph": {
+    "nodes": [
+      { "id": "prospero", "label": "Prospero", "group": "mages" },
+      { "id": "miranda", "label": "Miranda", "group": "royalty" },
+      { "id": "ariel", "label": "Ariel", "group": "spirits" },
+      { "id": "caliban", "label": "Caliban", "group": "islander" },
+      { "id": "ferdinand", "label": "Ferdinand", "group": "royalty" },
+      { "id": "alonso", "label": "Alonso", "group": "royalty" },
+      { "id": "antonio", "label": "Antonio", "group": "royalty" },
+      { "id": "gonzalo", "label": "Gonzalo", "group": "court" }
+    ],
+    "edges": [
+      { "source": "prospero", "target": "miranda", "relationship": "Father" },
+      { "source": "prospero", "target": "ariel", "relationship": "Commands" },
+      { "source": "prospero", "target": "caliban", "relationship": "Master" },
+      { "source": "miranda", "target": "ferdinand", "relationship": "Love" },
+      { "source": "prospero", "target": "antonio", "relationship": "Brother" },
+      { "source": "prospero", "target": "alonso", "relationship": "Confronts" },
+      { "source": "gonzalo", "target": "prospero", "relationship": "Aids" },
+      { "source": "ariel", "target": "alonso", "relationship": "Guides" }
+    ]
+  }
+}

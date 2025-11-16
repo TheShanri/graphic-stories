@@ -1,0 +1,29 @@
+{
+  "id": "king-lear",
+  "title": "King Lear",
+  "summary": "Lear divides his kingdom among his daughters, rewarding flattery and banishing honesty. Betrayed by Goneril and Regan, he descends into madness on a stormy heath while the loyal Cordelia raises an army to rescue him. Parallel betrayals in Gloucester's family end in tragedy for nearly all.",
+  "graph": {
+    "nodes": [
+      { "id": "lear", "label": "King Lear", "group": "royalty" },
+      { "id": "goneril", "label": "Goneril", "group": "royalty" },
+      { "id": "regan", "label": "Regan", "group": "royalty" },
+      { "id": "cordelia", "label": "Cordelia", "group": "royalty" },
+      { "id": "gloucester", "label": "Gloucester", "group": "nobility" },
+      { "id": "edmund", "label": "Edmund", "group": "nobility" },
+      { "id": "edgar", "label": "Edgar", "group": "nobility" },
+      { "id": "fool", "label": "Fool", "group": "court" }
+    ],
+    "edges": [
+      { "source": "lear", "target": "goneril", "relationship": "Father" },
+      { "source": "lear", "target": "regan", "relationship": "Father" },
+      { "source": "lear", "target": "cordelia", "relationship": "Father" },
+      { "source": "goneril", "target": "regan", "relationship": "Alliance" },
+      { "source": "edmund", "target": "goneril", "relationship": "Plots" },
+      { "source": "edmund", "target": "regan", "relationship": "Plots" },
+      { "source": "gloucester", "target": "edgar", "relationship": "Father" },
+      { "source": "gloucester", "target": "edmund", "relationship": "Father" },
+      { "source": "edmund", "target": "edgar", "relationship": "Frames" },
+      { "source": "fool", "target": "lear", "relationship": "Advises" }
+    ]
+  }
+}
