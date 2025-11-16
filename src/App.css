@@ -211,35 +211,23 @@ h2 {
   filter: drop-shadow(0 35px 45px rgba(0, 0, 0, 0.55));
 }
 
-.viz-gridlines line {
-  stroke: rgba(255, 255, 255, 0.12);
-  stroke-width: 1;
+.viz-placeholder {
+  min-height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
 }
 
-.viz-gridlines text {
-  fill: rgba(255, 255, 255, 0.55);
-  font-size: 0.75rem;
-  text-anchor: end;
+.graph-node text {
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.viz-bars rect {
-  stroke: rgba(255, 255, 255, 0.18);
-  stroke-width: 1;
-}
-
-.viz-value {
-  fill: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-anchor: middle;
-}
-
-.viz-axis text {
-  fill: rgba(255, 255, 255, 0.7);
-  font-size: 0.85rem;
-  text-anchor: middle;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.graph-link {
+  stroke-linecap: round;
 }
 
 .story-details {
@@ -261,6 +249,10 @@ h2 {
   margin: 0;
   font-size: 1rem;
   color: var(--text);
+}
+
+.story-description.error {
+  color: #ffc0c0;
 }
 
 .data-points {
@@ -293,6 +285,55 @@ h2 {
 .data-points ul {
   margin: 0;
   padding-left: 1.25rem;
+  color: var(--muted-foreground);
+}
+
+.graph-data-panel {
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1.25rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.panel-header.compact {
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.panel-header.compact h3 {
+  margin: 0.15rem 0 0;
+}
+
+.loading-pill {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.15rem 0.75rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.graph-json {
+  margin: 0;
+  padding: 1rem;
+  background: rgba(13, 14, 27, 0.85);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: auto;
+  max-height: 240px;
+}
+
+.graph-placeholder {
+  margin: 0;
   color: var(--muted-foreground);
 }
 

@@ -1,0 +1,23 @@
+{
+  "id": "macbeth",
+  "title": "Macbeth",
+  "summary": "A tale of ambition, murder, and paranoia. After Scottish general Macbeth receives a prophecy that he will become king, he and his wife, Lady Macbeth, murder King Duncan. This act leads to a spiral of guilt, more murders to cover his tracks, and ultimately his own downfall in a civil war.",
+  "graph": {
+    "nodes": [
+      { "id": "macbeth", "label": "Macbeth", "group": "royalty" },
+      { "id": "lady-macbeth", "label": "Lady Macbeth", "group": "royalty" },
+      { "id": "duncan", "label": "King Duncan", "group": "royalty" },
+      { "id": "banquo", "label": "Banquo", "group": "nobility" },
+      { "id": "macduff", "label": "Macduff", "group": "nobility" },
+      { "id": "witches", "label": "Three Witches", "group": "supernatural" }
+    ],
+    "edges": [
+      { "source": "macbeth", "target": "lady-macbeth", "relationship": "Married" },
+      { "source": "macbeth", "target": "duncan", "relationship": "Murders" },
+      { "source": "macbeth", "target": "banquo", "relationship": "Murders" },
+      { "source": "macbeth", "target": "macduff", "relationship": "Rival" },
+      { "source": "witches", "target": "macbeth", "relationship": "Gives Prophecy" },
+      { "source": "witches", "target": "banquo", "relationship": "Gives Prophecy" }
+    ]
+  }
+}
