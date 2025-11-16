@@ -6,6 +6,10 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "d3": ["src/vendor/d3-lite.ts"]
+    },
     "skipLibCheck": true,
 
     /* Bundler mode */
