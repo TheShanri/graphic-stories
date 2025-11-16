@@ -1,250 +1,174 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import './App.css'
-import InteractiveGraph, { type StoryGraph } from './components/InteractiveGraph'
+import SceneGraph, { type SceneEvent } from './SceneGraph'
 
-export type Story = {
-  id: string
-  title: string
-  authors: string
-  discipline: string
-  description: string
-  duration: string
-  dataSources: string[]
-}
-
-type StoryPayload = {
-  id: string
-  title: string
-  summary: string
-  graph: StoryGraph
-}
-
-const STORIES: Story[] = [
-  {
-    id: 'macbeth',
-    title: 'Macbeth',
-    authors: 'William Shakespeare · The Scottish Play',
-    discipline: 'Tragedy / Power',
-    duration: 'Runtime: ~135 minutes',
-    description:
-      'A fevered account of ambition, prophecy, and the spectral cost of power, remixed as a civic resilience briefing for modern audiences.',
-    dataSources: ['First Folio transcripts', 'Holinshed Chronicles', 'Royal correspondence marginalia'],
-  },
-  {
-    id: 'hamlet',
-    title: 'Hamlet',
-    authors: 'William Shakespeare · The Prince of Denmark',
-    discipline: 'Philosophy / Courtly Intrigue',
-    duration: 'Runtime: ~180 minutes',
-    description:
-      'A reflective dossier that charts grief, espionage, and the theater within the theater—optimized for scholars comparing early modern surveillance.',
-    dataSources: ['1604 quarto annotations', 'Wittenberg disputation notes', 'Court performance ledgers'],
-  },
-  {
-    id: 'king-lear',
-    title: 'King Lear',
-    authors: 'William Shakespeare · Storm-Tossed Monarch',
-    discipline: 'Familial Governance',
-    duration: 'Runtime: ~190 minutes',
-    description:
-      'A stark atlas of filial negotiations, coastal storms, and the fragile mathematics of trust across three crowns.',
-    dataSources: ['Stationers’ Register', 'Weather logs from Dover Cliff', 'Folger dramaturg memos'],
-  },
-  {
-    id: 'tempest',
-    title: 'The Tempest',
-    authors: 'William Shakespeare · Prospero’s Masque',
-    discipline: 'Mythic Science & Sound',
-    duration: 'Runtime: ~150 minutes',
-    description:
-      'An island laboratory that remaps magic as proto-ecology, translating spirits, shipwrecks, and forgiveness into sonic data stories.',
-    dataSources: ['Ship manifests from 1609 Sea Venture', 'Prospero’s marginalia', 'Masque instrumentation guides'],
-  },
+const ALL_SCENE_DATA: SceneEvent[][] = [
+  [
+    {
+      action_id: 'scene-1-event-1',
+      relationship_type: 'One-to-Many (1:M)',
+      operation_action_name: 'Issue command',
+      characters: {
+        initiators: ['Queen Mab'],
+        receivers: ['Envoy Talos', 'Archivist Wren'],
+      },
+      description: 'Queen Mab dispatches Envoy Talos and Archivist Wren to broker calm among coastal guilds.',
+    },
+    {
+      action_id: 'scene-1-event-2',
+      relationship_type: 'Many-to-One (M:1)',
+      operation_action_name: 'Deliver report',
+      characters: {
+        initiators: ['Envoy Talos', 'Archivist Wren'],
+        receivers: ['Queen Mab'],
+      },
+      description: 'Envoy Talos and Archivist Wren deliver satellite observations back to the queen.',
+    },
+    {
+      action_id: 'scene-1-event-3',
+      relationship_type: 'Self-loop (1→1)',
+      operation_action_name: 'Reflect',
+      characters: {
+        initiators: ['Queen Mab'],
+        receivers: ['Queen Mab'],
+      },
+      description: 'Queen Mab revisits her field notes to gauge whether the strategy still holds.',
+    },
+  ],
+  [
+    {
+      action_id: 'scene-2-event-1',
+      relationship_type: 'One-to-One (1:1)',
+      operation_action_name: 'Share warning',
+      characters: {
+        initiators: ['Navigator Sol'],
+        receivers: ['Cartographer Ibis'],
+      },
+      description: 'Navigator Sol finds Ibis in the chart room and whispers about an impending geomagnetic flare.',
+    },
+    {
+      action_id: 'scene-2-event-2',
+      relationship_type: 'One-to-Many (1:M)',
+      operation_action_name: 'Broadcast alert',
+      characters: {
+        initiators: ['Cartographer Ibis'],
+        receivers: ['Harbor Scribes', 'Signal Corps'],
+      },
+      description: 'Ibis spreads the alert through the harbor scribes and the signal corps watch posts.',
+    },
+    {
+      action_id: 'scene-2-event-3',
+      relationship_type: 'Many-to-Many (M:N)',
+      operation_action_name: 'Coordinate defenses',
+      characters: {
+        initiators: ['Signal Corps', 'Harbor Scribes'],
+        receivers: ['Aurora Wardens', 'Tide Wardens'],
+      },
+      description: 'Signal Corps and Harbor Scribes team up with both warden groups to choreograph countermeasures.',
+    },
+  ],
+  [
+    {
+      action_id: 'scene-3-event-1',
+      relationship_type: 'Many-to-One (M:1)',
+      operation_action_name: 'Request supplies',
+      characters: {
+        initiators: ['Aurora Wardens', 'Tide Wardens'],
+        receivers: ['Quartermaster Brio'],
+      },
+      description: 'The wardens appeal to Quartermaster Brio for aurora nets and salt towers.',
+    },
+    {
+      action_id: 'scene-3-event-2',
+      relationship_type: 'One-to-Many (1:M)',
+      operation_action_name: 'Dispatch caravans',
+      characters: {
+        initiators: ['Quartermaster Brio'],
+        receivers: ['Aurora Wardens', 'Tide Wardens', 'Signal Corps'],
+      },
+      description: 'Brio sends caravans of supplies toward each perimeter cohort.',
+    },
+    {
+      action_id: 'scene-3-event-3',
+      relationship_type: 'Many-to-Many (M:N)',
+      operation_action_name: 'Celebrate resilience',
+      characters: {
+        initiators: ['Aurora Wardens', 'Tide Wardens', 'Signal Corps'],
+        receivers: ['Queen Mab', 'Navigator Sol'],
+      },
+      description: 'Every cohort shares a pulse of gratitude back to Queen Mab and Navigator Sol.',
+    },
+  ],
 ]
 
 function App() {
-  const [activeId, setActiveId] = useState(STORIES[0].id)
-  const [storyPayloads, setStoryPayloads] = useState<Record<string, StoryPayload>>({})
-  const [storyErrors, setStoryErrors] = useState<Record<string, string>>({})
-  const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
+  const [activeSceneIndex, setActiveSceneIndex] = useState(0)
+  const totalScenes = ALL_SCENE_DATA.length
+  const activeSceneData = ALL_SCENE_DATA[activeSceneIndex]
 
-  const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
-  const activePayload = storyPayloads[activeId]
-  const isLoadingActiveStory = loadingStoryId === activeId && !activePayload
-  const activeStoryError = storyErrors[activeId]
-
-  useEffect(() => {
-    const targetId = activeId
-    if (storyPayloads[targetId]) {
-      return
+  const sceneTitle = useMemo(() => {
+    const firstAction = activeSceneData[0]
+    if (!firstAction) {
+      return `Scene ${activeSceneIndex + 1}`
     }
+    return `${firstAction.operation_action_name} · ${firstAction.relationship_type}`
+  }, [activeSceneData, activeSceneIndex])
 
-    let isCancelled = false
-    setLoadingStoryId(targetId)
-    setStoryErrors((prev) => {
-      const next = { ...prev }
-      delete next[targetId]
-      return next
-    })
+  const goToNextScene = () => {
+    setActiveSceneIndex((current) => Math.min(totalScenes - 1, current + 1))
+  }
 
-    fetch(`/json/${targetId}.json`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Unable to load ${targetId}.json`)
-        }
-        return response.json() as Promise<StoryPayload>
-      })
-      .then((payload) => {
-        if (isCancelled) {
-          return
-        }
-        setStoryPayloads((prev) => ({ ...prev, [targetId]: payload }))
-      })
-      .catch((error: Error) => {
-        if (isCancelled) {
-          return
-        }
-        setStoryErrors((prev) => ({ ...prev, [targetId]: error.message }))
-      })
-      .finally(() => {
-        if (isCancelled) {
-          return
-        }
-        setLoadingStoryId((current) => (current === targetId ? null : current))
-      })
-
-    return () => {
-      isCancelled = true
-    }
-  }, [activeId, storyPayloads])
-
-  const summaryText = activePayload?.summary ?? activeStory.description
-  const graphJson = activePayload?.graph ? JSON.stringify(activePayload.graph, null, 2) : null
+  const goToPreviousScene = () => {
+    setActiveSceneIndex((current) => Math.max(0, current - 1))
+  }
 
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div className="brand-block">
-          <p className="eyebrow">Graphic Stories · Research Alpha</p>
-          <h1>Stories Viewer</h1>
-          <p className="lede">
-            A modern workspace for previewing narrative visualizations, keeping track of data provenance, and curating
-            interdisciplinary collaborations.
-          </p>
-        </div>
-        <nav className="primary-nav">
-          <a className="active" href="/">
-            Stories Viewer
-          </a>
-          <a href="/about.html">About</a>
-        </nav>
+        <p className="eyebrow">Graphic Stories · Interactive dossier</p>
+        <h1>Panel-based Graph Explorer</h1>
+        <p>
+          Step through key moments and watch how each panel reshapes the network of collaborators, messengers, and witnesses
+          across the story world.
+        </p>
       </header>
 
-      <main className="workspace" aria-live="polite">
-        <section className="stories-panel" aria-label="Story library">
-          <div className="panel-header">
-            <div>
-              <p className="eyebrow">Library</p>
-              <h2>Story Index</h2>
-            </div>
-            <button className="ghost-button" type="button">
-              + Submit Narrative
-            </button>
+      <main className="visualization-panel" aria-live="polite">
+        <div className="panel-nav">
+          <button type="button" onClick={goToPreviousScene} disabled={activeSceneIndex === 0}>
+            Previous
+          </button>
+          <div className="panel-status">
+            <p className="eyebrow">Scene {activeSceneIndex + 1}</p>
+            <p className="scene-title">{sceneTitle}</p>
+            <p className="scene-count">{activeSceneIndex + 1} / {totalScenes}</p>
           </div>
-          <ul className="story-list">
-            {STORIES.map((story) => (
-              <li key={story.id}>
-                <button
-                  type="button"
-                  className={`story-item ${story.id === activeId ? 'selected' : ''}`}
-                  onClick={() => setActiveId(story.id)}
-                >
-                  <div className="story-meta">
-                    <span className="discipline">{story.discipline}</span>
-                    <span className="duration">{story.duration}</span>
-                  </div>
-                  <h3>{story.title}</h3>
-                  <p>{story.authors}</p>
-                </button>
+          <button type="button" onClick={goToNextScene} disabled={activeSceneIndex === totalScenes - 1}>
+            Next
+          </button>
+        </div>
+
+        <div className="visualization-frame">
+          <div className="viz-surface" role="img" aria-label={`Force graph for scene ${activeSceneIndex + 1}`}>
+            <SceneGraph key={activeSceneIndex} sceneData={activeSceneData} />
+          </div>
+        </div>
+
+        <section className="scene-notes" aria-label="Scene notes">
+          <h2>Event log</h2>
+          <ol>
+            {activeSceneData.map((event) => (
+              <li key={event.action_id}>
+                <p className="event-name">
+                  <strong>{event.operation_action_name}</strong>
+                  <span>{event.relationship_type}</span>
+                </p>
+                <p className="event-description">{event.description}</p>
               </li>
             ))}
-          </ul>
-        </section>
-
-        <section className="visualization-panel" aria-label="Visualization preview">
-          <div className="visualization-frame">
-            <div className="viz-surface">
-              <div className="viz-hint">Live network canvas</div>
-              <div className="viz-chart" role="img" aria-label={`Network graph for ${activeStory.title}`}>
-                {activePayload ? (
-                  <InteractiveGraph graph={activePayload.graph} />
-                ) : (
-                  <div className="viz-placeholder" aria-live="polite">
-                    {isLoadingActiveStory ? 'Loading story graph…' : 'Select a story to load its graph data.'}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <article className="story-details">
-            <header>
-              <p className="eyebrow">Now viewing</p>
-              <h2>{activeStory.title}</h2>
-              <p className="authors">{activeStory.authors}</p>
-            </header>
-            {activeStoryError ? (
-              <p className="story-description error">{activeStoryError}</p>
-            ) : (
-              <p className="story-description">{summaryText}</p>
-            )}
-            <dl className="data-points">
-              <div>
-                <dt>Discipline</dt>
-                <dd>{activeStory.discipline}</dd>
-              </div>
-              <div>
-                <dt>Duration</dt>
-                <dd>{activeStory.duration}</dd>
-              </div>
-              <div>
-                <dt>Data sources</dt>
-                <dd>
-                  <ul>
-                    {activeStory.dataSources.map((source) => (
-                      <li key={source}>{source}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            </dl>
-            <section className="graph-data-panel" aria-live="polite">
-              <div className="panel-header compact">
-                <div>
-                  <p className="eyebrow">LLM payload</p>
-                  <h3>Graph data</h3>
-                </div>
-                {isLoadingActiveStory && <span className="loading-pill">Loading…</span>}
-              </div>
-              {graphJson ? (
-                <pre className="graph-json">{graphJson}</pre>
-              ) : (
-                <p className="graph-placeholder">
-                  {isLoadingActiveStory
-                    ? 'Fetching summary + graph object from the JSON knowledge base…'
-                    : 'Select a story to request its summary and graph.'}
-                </p>
-              )}
-            </section>
-          </article>
+          </ol>
         </section>
       </main>
-
-      <footer className="app-footer">
-        <p>© {new Date().getFullYear()} Graphic Stories Lab · Built with React, TypeScript, and SWC.</p>
-        <p>
-          Need a demo deck? <a href="mailto:hello@graphicstories.edu">hello@graphicstories.edu</a>
-        </p>
-      </footer>
     </div>
   )
 }
