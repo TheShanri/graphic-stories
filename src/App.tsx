@@ -233,7 +233,7 @@ function App() {
               <div className="viz-hint">Live network canvas</div>
               <div className="viz-chart" role="img" aria-label={`Network graph for ${activeStory.title}`}>
                 {graph ? (
-                  <InteractiveGraph graph={graph} />
+                  <InteractiveGraph key={currentSceneKey ?? 'no-scene'} graph={graph} />
                 ) : (
                   <div className="viz-placeholder" aria-live="polite">
                     {isLoadingActiveStory ? 'Loading story graph…' : 'Select a story to load its graph data.'}

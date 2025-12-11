@@ -242,10 +242,29 @@ function InteractiveGraph({ graph }: Props) {
             return null
           }
           const key = `${edge.source}-${edge.target}`
+          const midX = (source.x + target.x) / 2
+          const midY = (source.y + target.y) / 2
+          const angle = (Math.atan2(target.y - source.y, target.x - source.x) * 180) / Math.PI
           return (
-            <line key={key} x1={source.x} y1={source.y} x2={target.x} y2={target.y}>
-              {edge.relationship && <title>{edge.relationship}</title>}
-            </line>
+            <g key={key}>
+              <line x1={source.x} y1={source.y} x2={target.x} y2={target.y}>
+                {edge.relationship && <title>{edge.relationship}</title>}
+              </line>
+              {edge.relationship ? (
+                <text
+                  x={midX}
+                  y={midY}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  transform={`rotate(${angle}, ${midX}, ${midY})`}
+                  fill="rgba(255,255,255,0.85)"
+                  fontSize={10}
+                  pointerEvents="none"
+                >
+                  {edge.relationship}
+                </text>
+              ) : null}
+            </g>
           )
         })}
       </g>
