@@ -283,6 +283,19 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
   return (
     <>
       <svg ref={svgRef} viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`} role="presentation">
+        <defs>
+          <marker
+            id="arrowhead"
+            viewBox="0 0 12 12"
+            refX="10"
+            refY="6"
+            markerWidth="12"
+            markerHeight="12"
+            orient="auto"
+          >
+            <path d="M0,0 L12,6 L0,12 L3.5,6 Z" fill="rgba(255,255,255,0.75)" />
+          </marker>
+        </defs>
         <g className="graph-links" stroke="rgba(255,255,255,0.45)">
           {decoratedEdges.map((edge) => {
             const source = positionLookup.get(edge.source)
@@ -315,6 +328,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
                   d={pathD}
                   fill="none"
                   strokeWidth={hoveredEdgeKey === edge.renderKey ? 2.5 : 1.5}
+                  markerEnd="url(#arrowhead)"
                   onPointerEnter={(event) => {
                     setHoveredEdgeKey(edge.renderKey)
                     handleEdgePointerMove(event)

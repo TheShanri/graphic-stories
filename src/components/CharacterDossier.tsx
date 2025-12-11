@@ -37,8 +37,8 @@ const buildPath = (points: { x: number; y: number }[], xScale: LinearScale, ySca
 }
 
 function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }: Props) {
-  const chartWidth = 320
-  const chartHeight = 180
+  const chartWidth = 400
+  const chartHeight = 150
   const chartPadding = 36
 
   const renderChart = (
@@ -75,7 +75,14 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
           <h4>{label}</h4>
           <p className="chart-scale">Scene progression</p>
         </div>
-        <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} role="img" aria-label={`${label} alignment over time`}>
+        <svg
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          role="img"
+          aria-label={`${label} alignment over time`}
+          width="100%"
+          height="auto"
+          preserveAspectRatio="xMidYMid meet"
+        >
           <g className="chart-grid">
             {d3.ticks(0, 100, 4).map((tick) => (
               <g key={tick}>
@@ -147,12 +154,6 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
           </button>
         </div>
 
-        <div className="dossier-charts">
-          {renderChart('Fool → Hero', (stats) => stats.foolHero, 'var(--accent)')}
-          {renderChart('Angel → Demon', (stats) => stats.angelDemon, '#8ae2ff')}
-          {renderChart('Traditionalist → Adventurer', (stats) => stats.tradAdv, '#ffd166')}
-        </div>
-
         {justificationItems.length ? (
           <div className="dossier-justifications">
             <p className="eyebrow">Scene justification</p>
@@ -165,6 +166,12 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
             </ul>
           </div>
         ) : null}
+
+        <div className="dossier-charts">
+          {renderChart('Fool → Hero', (stats) => stats.foolHero, 'var(--accent)')}
+          {renderChart('Angel → Demon', (stats) => stats.angelDemon, '#8ae2ff')}
+          {renderChart('Traditionalist → Adventurer', (stats) => stats.tradAdv, '#ffd166')}
+        </div>
       </div>
     </aside>
   )
