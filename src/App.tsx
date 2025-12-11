@@ -121,10 +121,14 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
     return null
   }
 
+  const normalizeId = (id: string) => normalizeName(id)
+
   const characterMap = new Map<string, { label: string; stats?: CharacterSceneStats }>()
+  const normalizedCharacterKeys = new Map<string, string>()
   Object.entries(scene.characters).forEach(([rawId, profile]) => {
-    const normalizedId = normalizeName(rawId)
+    const normalizedId = normalizeId(rawId)
     if (!characterMap.has(normalizedId)) {
+      normalizedCharacterKeys.set(normalizedId, rawId)
       characterMap.set(normalizedId, {
         label: formatDisplayName(rawId),
         stats: normalizeCharacterStats(profile),
@@ -134,16 +138,16 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
 
   const groupNodes = new Map<string, string>()
 
-  const characterIds = Array.from(characterMap.keys())
+  const characterIds = Array.from(normalizedCharacterKeys.values())
 
   const expandParticipants = (participants: string[]) => {
     const expanded: string[] = []
     participants.forEach((id) => {
-      const normalizedId = normalizeName(id)
+      const normalizedId = normalizeId(id)
       if (id.trim().toUpperCase() === 'ALL') {
         expanded.push(...characterIds)
-      } else if (characterIds.includes(normalizedId)) {
-        expanded.push(normalizedId)
+      } else if (normalizedCharacterKeys.has(normalizedId)) {
+        expanded.push(normalizedCharacterKeys.get(normalizedId) ?? normalizedId)
       } else {
         expanded.push(normalizedId)
         groupNodes.set(normalizedId, formatDisplayName(id))
@@ -175,12 +179,18 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
   })
 
   const characterNodes: StoryGraph['nodes'] = Array.from(characterMap.entries())
-    .filter(([id]) => usedNodeIds.has(id))
-    .map(([id, data]) => ({
-      id,
-      label: data.label,
-      stats: data.stats,
-    }))
+    .filter(([normalizedId]) => {
+      const originalId = normalizedCharacterKeys.get(normalizedId)
+      return Boolean(originalId && usedNodeIds.has(originalId))
+    })
+    .map(([normalizedId, data]) => {
+      const originalId = normalizedCharacterKeys.get(normalizedId) ?? normalizedId
+      return {
+        id: originalId,
+        label: data.label,
+        stats: data.stats,
+      }
+    })
 
   const groupNodesArray = Array.from(groupNodes.entries())
     .filter(([id]) => usedNodeIds.has(id))
