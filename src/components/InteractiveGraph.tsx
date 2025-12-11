@@ -102,11 +102,13 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
   })
   const nodesRef = useRef<PositionedNode[]>(positions)
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null)
+  const [hoveredEdgeKey, setHoveredEdgeKey] = useState<string | null>(null)
 
   useEffect(() => {
     const seeded = createInitialNodes(graph)
     nodesRef.current = seeded
     setPositions(seeded.map((node) => ({ ...node })))
+    setHoveredEdgeKey(null)
 
     if (!graph.nodes.length) {
       return
@@ -279,7 +281,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
 
   return (
     <svg ref={svgRef} viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`} role="presentation">
-      <g className="graph-links" stroke="rgba(255,255,255,0.45)" strokeWidth={1.5}>
+      <g className="graph-links" stroke="rgba(255,255,255,0.45)">
         {decoratedEdges.map((edge) => {
           const source = positionLookup.get(edge.source)
           const target = positionLookup.get(edge.target)
@@ -297,34 +299,18 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
           const cy = midY + normalY
           const pathD = `M ${source.x} ${source.y} Q ${cx} ${cy} ${target.x} ${target.y}`
 
-          const t = 0.5
-          const labelX = (1 - t) * (1 - t) * source.x + 2 * (1 - t) * t * cx + t * t * target.x
-          const labelY = (1 - t) * (1 - t) * source.y + 2 * (1 - t) * t * cy + t * t * target.y
-          const tangentX = 2 * (1 - t) * (cx - source.x) + 2 * t * (target.x - cx)
-          const tangentY = 2 * (1 - t) * (cy - source.y) + 2 * t * (target.y - cy)
-          const angle = (Math.atan2(tangentY, tangentX) * 180) / Math.PI
-
           return (
             <g key={edge.renderKey}>
-              <path className="graph-link" d={pathD} fill="none">
+              <path
+                className="graph-link"
+                d={pathD}
+                fill="none"
+                strokeWidth={hoveredEdgeKey === edge.renderKey ? 2.5 : 1.5}
+                onPointerEnter={() => setHoveredEdgeKey(edge.renderKey)}
+                onPointerLeave={() => setHoveredEdgeKey((current) => (current === edge.renderKey ? null : current))}
+              >
                 {edge.relationship && <title>{edge.relationship}</title>}
               </path>
-              {edge.relationship ? (
-                <text
-                  x={labelX}
-                  y={labelY}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  transform={`rotate(${angle}, ${labelX}, ${labelY})`}
-                  fill="rgba(255,255,255,0.85)"
-                  fontSize={10}
-                  pointerEvents="none"
-                  stroke="var(--background)"
-                  strokeWidth={3}
-                >
-                  <tspan stroke="none">{edge.relationship}</tspan>
-                </text>
-              ) : null}
             </g>
           )
         })}
@@ -374,32 +360,95 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
             return null
           }
 
-          const barWidth = 120
+          const barWidth = 160
           const xScale = d3.scaleLinear().domain([0, 100]).range([0, barWidth])
-          const maxBarHeight = bars.length * 22 + 14
+          const cardWidth = barWidth + 60
+          const cardHeight = bars.length * 52 + 36
 
           return (
-            <g
+            <foreignObject
               className="node-tooltip"
-              transform={`translate(${Math.min(Math.max(node.x + NODE_RADIUS + 12, 12), GRAPH_WIDTH - barWidth - 24)}, ${Math.max(12, node.y - maxBarHeight / 2)})`}
+              x={Math.min(Math.max(node.x + NODE_RADIUS + 12, 8), GRAPH_WIDTH - cardWidth - 12)}
+              y={Math.max(8, node.y - cardHeight / 2)}
+              width={cardWidth}
+              height={cardHeight}
             >
-              <rect width={barWidth + 32} height={maxBarHeight} rx={8} ry={8} fill="rgba(0,0,0,0.72)" stroke="rgba(255,255,255,0.15)" />
-              {bars.map((bar, index) => {
-                const top = 12 + index * 22
-                const leftWidth = xScale(bar.stats.left)
-                const rightWidth = xScale(bar.stats.right)
-                return (
-                  <g key={bar.key} transform={`translate(12, ${top})`}>
-                    <text x={0} y={-2} fontSize={9} fill="rgba(255,255,255,0.85)">
-                      {bar.label}
-                    </text>
-                    <rect x={0} y={4} width={barWidth} height={8} fill="rgba(255,255,255,0.08)" rx={4} />
-                    <rect x={0} y={4} width={leftWidth} height={8} fill="rgba(255,255,255,0.4)" rx={4} />
-                    <rect x={barWidth - rightWidth} y={4} width={rightWidth} height={8} fill="var(--accent)" rx={4} />
-                  </g>
-                )
-              })}
-            </g>
+              <div
+                xmlns="http://www.w3.org/1999/xhtml"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(20, 20, 35, 0.8)',
+                  border: '1px solid rgba(255,255,255,0.45)',
+                  borderRadius: 12,
+                  padding: '12px 14px',
+                  color: '#f8f8ff',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <strong style={{ fontSize: 14, letterSpacing: 0.2 }}>{node.label}</strong>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)' }}>Scene temperament</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {bars.map((bar) => {
+                    const leftWidth = xScale(bar.stats.left)
+                    const rightWidth = xScale(bar.stats.right)
+                    return (
+                      <div key={bar.key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'rgba(255,255,255,0.78)' }}>
+                          <span>{`${bar.stats.leftLabel} / ${bar.stats.rightLabel}`}</span>
+                          <span style={{ color: 'rgba(255,255,255,0.6)' }}>{bar.label}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', minWidth: 36 }}>
+                            {bar.stats.leftLabel}
+                          </span>
+                          <div
+                            style={{
+                              position: 'relative',
+                              width: barWidth,
+                              height: 10,
+                              borderRadius: 6,
+                              background: 'linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.14))',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            <div
+                              style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 0,
+                                bottom: 0,
+                                width: leftWidth,
+                                background: 'rgba(255,255,255,0.55)',
+                              }}
+                            />
+                            <div
+                              style={{
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                width: rightWidth,
+                                background: 'var(--accent)',
+                              }}
+                            />
+                          </div>
+                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', minWidth: 48, textAlign: 'right' }}>
+                            {bar.stats.rightLabel}
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </foreignObject>
           )
         })()
       ) : null}
