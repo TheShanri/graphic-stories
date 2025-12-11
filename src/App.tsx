@@ -104,6 +104,8 @@ const normalizeCharacterStats = (profile: RawCharacterProfile | undefined): Char
 
 const normalizeName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/\s+/g, ' ').toLowerCase()
 
+const normalizeId = (id: string) => normalizeName(id)
+
 const formatDisplayName = (name: string) => {
   const cleaned = name.replace(/\s*\(.*?\)\s*/g, '').trim()
   if (!cleaned) {
@@ -120,8 +122,6 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
   if (!scene) {
     return null
   }
-
-  const normalizeId = (id: string) => normalizeName(id)
 
   const characterMap = new Map<string, { label: string; stats?: CharacterSceneStats }>()
   const normalizedCharacterKeys = new Map<string, string>()
@@ -228,9 +228,13 @@ function App() {
     if (!scenes) {
       return []
     }
+    const normalizedTarget = normalizeId(characterId)
     return sortEventKeys(Object.keys(scenes))
       .map((sceneName) => {
-        const sceneProfile = scenes[sceneName]?.characters?.[characterId]
+        const sceneCharacters = scenes[sceneName]?.characters
+        const sceneProfile = sceneCharacters
+          ? Object.entries(sceneCharacters).find(([id]) => normalizeId(id) === normalizedTarget)?.[1]
+          : undefined
         const stats = normalizeCharacterStats(sceneProfile)
         return stats ? { sceneName, stats } : null
       })
