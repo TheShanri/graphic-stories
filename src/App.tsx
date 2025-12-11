@@ -2,85 +2,123 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import InteractiveGraph, { type StoryGraph } from './components/InteractiveGraph'
 
-export type Story = {
+type Story = {
   id: string
   title: string
   authors: string
   discipline: string
-  description: string
   duration: string
+  description: string
   dataSources: string[]
 }
 
-type StoryPayload = {
-  id: string
+type SceneEvent = {
   title: string
-  summary: string
-  graph: StoryGraph
+  description: string
+  initiators: string[]
+  receivers: string[]
 }
+
+type Scene = {
+  characters: Record<string, unknown>
+  actions: Record<string, SceneEvent & { type?: string }>
+}
+
+type StoryScenes = Record<string, Scene>
 
 const STORIES: Story[] = [
   {
-    id: 'macbeth',
+    id: 'macbeth_data',
     title: 'Macbeth',
-    authors: 'William Shakespeare · The Scottish Play',
+    authors: 'William Shakespeare',
     discipline: 'Tragedy / Power',
     duration: 'Runtime: ~135 minutes',
-    description:
-      'A fevered account of ambition, prophecy, and the spectral cost of power, remixed as a civic resilience briefing for modern audiences.',
-    dataSources: ['First Folio transcripts', 'Holinshed Chronicles', 'Royal correspondence marginalia'],
-  },
-  {
-    id: 'hamlet',
-    title: 'Hamlet',
-    authors: 'William Shakespeare · The Prince of Denmark',
-    discipline: 'Philosophy / Courtly Intrigue',
-    duration: 'Runtime: ~180 minutes',
-    description:
-      'A reflective dossier that charts grief, espionage, and the theater within the theater—optimized for scholars comparing early modern surveillance.',
-    dataSources: ['1604 quarto annotations', 'Wittenberg disputation notes', 'Court performance ledgers'],
-  },
-  {
-    id: 'king-lear',
-    title: 'King Lear',
-    authors: 'William Shakespeare · Storm-Tossed Monarch',
-    discipline: 'Familial Governance',
-    duration: 'Runtime: ~190 minutes',
-    description:
-      'A stark atlas of filial negotiations, coastal storms, and the fragile mathematics of trust across three crowns.',
-    dataSources: ['Stationers’ Register', 'Weather logs from Dover Cliff', 'Folger dramaturg memos'],
-  },
-  {
-    id: 'tempest',
-    title: 'The Tempest',
-    authors: 'William Shakespeare · Prospero’s Masque',
-    discipline: 'Mythic Science & Sound',
-    duration: 'Runtime: ~150 minutes',
-    description:
-      'An island laboratory that remaps magic as proto-ecology, translating spirits, shipwrecks, and forgiveness into sonic data stories.',
-    dataSources: ['Ship manifests from 1609 Sea Venture', 'Prospero’s marginalia', 'Masque instrumentation guides'],
+    description: 'A dynamic scene-by-scene view of Macbeth built directly from JSON source files.',
+    dataSources: ['First Folio transcripts', 'Holinshed Chronicles'],
   },
 ]
 
+const sortEventKeys = (keys: string[]) => {
+  const sorted = [...keys].sort((a, b) => {
+    const numberFromKey = (key: string) => Number(key.replace(/\D+/g, ''))
+    return numberFromKey(a) - numberFromKey(b)
+  })
+  return sorted
+}
+
+const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
+  if (!scene) {
+    return null
+  }
+
+  const characterIds = Object.keys(scene.characters)
+  const groupNodes = new Set<string>()
+
+  const expandParticipants = (participants: string[]) => {
+    const expanded: string[] = []
+    participants.forEach((id) => {
+      if (id === 'ALL') {
+        expanded.push(...characterIds)
+      } else if (characterIds.includes(id)) {
+        expanded.push(id)
+      } else {
+        expanded.push(id)
+        groupNodes.add(id)
+      }
+    })
+    return expanded
+  }
+
+  const edges = sortEventKeys(Object.keys(scene.actions)).flatMap((eventKey) => {
+    const event = scene.actions[eventKey]
+    if (!event) {
+      return []
+    }
+    const initiators = expandParticipants(event.initiators)
+    const receivers = expandParticipants(event.receivers)
+    const links: StoryGraph['edges'] = []
+    initiators.forEach((source) => {
+      receivers.forEach((target) => {
+        links.push({ source, target, relationship: event.title })
+      })
+    })
+    return links
+  })
+
+  const characterNodes: StoryGraph['nodes'] = characterIds.map((id) => ({ id, label: id }))
+  const groupNodesArray = Array.from(groupNodes).map((id) => ({ id, label: id, group: 'group' }))
+
+  return { nodes: [...characterNodes, ...groupNodesArray], edges }
+}
+
 function App() {
   const [activeId, setActiveId] = useState(STORIES[0].id)
-  const [storyPayloads, setStoryPayloads] = useState<Record<string, StoryPayload>>({})
+  const [storyScenes, setStoryScenes] = useState<Record<string, StoryScenes>>({})
   const [storyErrors, setStoryErrors] = useState<Record<string, string>>({})
   const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
+  const [sceneIndex, setSceneIndex] = useState(0)
 
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
-  const activePayload = storyPayloads[activeId]
-  const isLoadingActiveStory = loadingStoryId === activeId && !activePayload
+  const activeScenes = storyScenes[activeId]
   const activeStoryError = storyErrors[activeId]
+  const isLoadingActiveStory = loadingStoryId === activeId && !activeScenes
+
+  const sceneKeys = useMemo(() => (activeScenes ? Object.keys(activeScenes) : []), [activeScenes])
+  const orderedSceneKeys = useMemo(() => [...sceneKeys].sort(), [sceneKeys])
+  const currentSceneKey = orderedSceneKeys[sceneIndex]
+  const currentScene = activeScenes?.[currentSceneKey]
+
+  const graph = useMemo(() => buildGraphFromScene(currentScene), [currentScene])
 
   useEffect(() => {
     const targetId = activeId
-    if (storyPayloads[targetId]) {
+    if (storyScenes[targetId]) {
       return
     }
 
     let isCancelled = false
     setLoadingStoryId(targetId)
+    setSceneIndex(0)
     setStoryErrors((prev) => {
       const next = { ...prev }
       delete next[targetId]
@@ -92,13 +130,13 @@ function App() {
         if (!response.ok) {
           throw new Error(`Unable to load ${targetId}.json`)
         }
-        return response.json() as Promise<StoryPayload>
+        return response.json() as Promise<StoryScenes>
       })
       .then((payload) => {
         if (isCancelled) {
           return
         }
-        setStoryPayloads((prev) => ({ ...prev, [targetId]: payload }))
+        setStoryScenes((prev) => ({ ...prev, [targetId]: payload }))
       })
       .catch((error: Error) => {
         if (isCancelled) {
@@ -116,10 +154,28 @@ function App() {
     return () => {
       isCancelled = true
     }
-  }, [activeId, storyPayloads])
+  }, [activeId, storyScenes])
 
-  const summaryText = activePayload?.summary ?? activeStory.description
-  const graphJson = activePayload?.graph ? JSON.stringify(activePayload.graph, null, 2) : null
+  const handleNextScene = () => {
+    setSceneIndex((index) => Math.min(index + 1, Math.max(orderedSceneKeys.length - 1, 0)))
+  }
+
+  const handlePreviousScene = () => {
+    setSceneIndex((index) => Math.max(index - 1, 0))
+  }
+
+  const narrative = useMemo(() => {
+    if (!currentScene) {
+      return []
+    }
+    return sortEventKeys(Object.keys(currentScene.actions)).map((key) => ({
+      key,
+      title: currentScene.actions[key]?.title ?? key,
+      description: currentScene.actions[key]?.description ?? '',
+    }))
+  }, [currentScene])
+
+  const graphJson = graph ? JSON.stringify(graph, null, 2) : null
 
   return (
     <div className="app-shell">
@@ -176,8 +232,8 @@ function App() {
             <div className="viz-surface">
               <div className="viz-hint">Live network canvas</div>
               <div className="viz-chart" role="img" aria-label={`Network graph for ${activeStory.title}`}>
-                {activePayload ? (
-                  <InteractiveGraph graph={activePayload.graph} />
+                {graph ? (
+                  <InteractiveGraph graph={graph} />
                 ) : (
                   <div className="viz-placeholder" aria-live="polite">
                     {isLoadingActiveStory ? 'Loading story graph…' : 'Select a story to load its graph data.'}
@@ -195,8 +251,28 @@ function App() {
             {activeStoryError ? (
               <p className="story-description error">{activeStoryError}</p>
             ) : (
-              <p className="story-description">{summaryText}</p>
+              <p className="story-description">{activeStory.description}</p>
             )}
+
+            <div className="scene-controls">
+              <div>
+                <p className="eyebrow">Scene navigation</p>
+                <p className="scene-label">{currentSceneKey ? `Scene: ${currentSceneKey}` : 'No scene loaded'}</p>
+              </div>
+              <div className="scene-buttons">
+                <button type="button" onClick={handlePreviousScene} disabled={sceneIndex === 0 || !orderedSceneKeys.length}>
+                  Previous Scene
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextScene}
+                  disabled={sceneIndex >= orderedSceneKeys.length - 1 || !orderedSceneKeys.length}
+                >
+                  Next Scene
+                </button>
+              </div>
+            </div>
+
             <dl className="data-points">
               <div>
                 <dt>Discipline</dt>
@@ -217,10 +293,11 @@ function App() {
                 </dd>
               </div>
             </dl>
+
             <section className="graph-data-panel" aria-live="polite">
               <div className="panel-header compact">
                 <div>
-                  <p className="eyebrow">LLM payload</p>
+                  <p className="eyebrow">Scene payload</p>
                   <h3>Graph data</h3>
                 </div>
                 {isLoadingActiveStory && <span className="loading-pill">Loading…</span>}
@@ -230,9 +307,30 @@ function App() {
               ) : (
                 <p className="graph-placeholder">
                   {isLoadingActiveStory
-                    ? 'Fetching summary + graph object from the JSON knowledge base…'
-                    : 'Select a story to request its summary and graph.'}
+                    ? 'Fetching scene graph from the JSON knowledge base…'
+                    : 'Select a story to request its scenes and graph.'}
                 </p>
+              )}
+            </section>
+
+            <section className="narrative-panel" aria-label="Scene narrative">
+              <div className="panel-header compact">
+                <div>
+                  <p className="eyebrow">Scene narrative</p>
+                  <h3>Plot steps</h3>
+                </div>
+              </div>
+              {narrative.length ? (
+                <ol className="narrative-list">
+                  {narrative.map((item) => (
+                    <li key={item.key}>
+                      <h4>{item.title}</h4>
+                      <p>{item.description}</p>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="graph-placeholder">Load a scene to read its plot description.</p>
               )}
             </section>
           </article>

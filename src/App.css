@@ -337,6 +337,65 @@ h2 {
   color: var(--muted-foreground);
 }
 
+.scene-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.scene-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scene-buttons button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+}
+
+.scene-label {
+  margin: 0.1rem 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+.narrative-panel {
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1.25rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.narrative-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.narrative-list h4 {
+  margin: 0;
+}
+
+.narrative-list p {
+  margin: 0.15rem 0 0;
+  color: var(--muted-foreground);
+}
+
 .app-footer {
   display: flex;
   flex-direction: column;

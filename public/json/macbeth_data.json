@@ -1,0 +1,594 @@
+{
+  "Act 1, Scene 1": {
+    "characters": {
+      "First Witch": {
+        "fool-hero": {
+          "Fool": 5,
+          "Hero": 95,
+          "justification": "Demonstrates immense supernatural capability, controlling the elements (thunder, lightning, rain) and possessing clear, purposeful intent (meeting Macbeth)."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Explicitly an agent of moral corruption and chaos, dedicated to inverting natural order ('Fair is foul'). Highly dangerous and depraved."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 10,
+          "Adventurer": 90,
+          "justification": "Highly unpredictable and unconventional, operating outside of social and natural laws. Their language (rhyme, paradox) is creative and disruptive."
+        }
+      },
+      "Second Witch": {
+        "fool-hero": {
+          "Fool": 5,
+          "Hero": 95,
+          "justification": "Shares the collective supernatural power and foresight of the Weird Sisters, demonstrating capability in planning and prophecy."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Contributes to the atmosphere of moral inversion and chaos, confirming the dangerous nature of their meeting and purpose."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 10,
+          "Adventurer": 90,
+          "justification": "Part of the unconventional group, focused on disrupting the predictable outcome of the battle ('When the battle's lost and won')."
+        }
+      },
+      "Third Witch": {
+        "fool-hero": {
+          "Fool": 5,
+          "Hero": 95,
+          "justification": "Shares the collective supernatural power and foresight, demonstrating capability by setting the precise time and target for their meeting."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Confirms the corrupting target of their meeting ('There to meet with Macbeth'), solidifying their role as agents of darkness."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 10,
+          "Adventurer": 90,
+          "justification": "Part of the unconventional group, focused on disrupting the established order through unpredictable means."
+        }
+      }
+    },
+    "actions": {
+      "evt_1": {
+        "title": "Plan meeting",
+        "description": "The three witches collectively discuss and decide upon the time ('When the battle's lost and won') and place ('Upon the heath') for their next meeting.",
+        "type": "Many-to-Many (M:N)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ]
+      },
+      "evt_2": {
+        "title": "Target Macbeth",
+        "description": "The witches conclude their planning by identifying the object of their meeting: 'There to meet with Macbeth.' The collective (Many) directs their future action toward a single entity (One).",
+        "type": "Many-to-One (M:1)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_3": {
+        "title": "Chant theme",
+        "description": "All three witches act in unison (as 'ALL') to chant the paradoxical theme 'Fair is foul, and foul is fair,' establishing the supernatural and moral ambiguity of the play.",
+        "type": "Many-to-Many (M:N)",
+        "initiators": [
+          "ALL"
+        ],
+        "receivers": [
+          "ALL"
+        ]
+      }
+    }
+  },
+  "Act 1, Scene 2": {
+    "characters": {
+      "DUNCAN": {
+        "fool-hero": {
+          "Fool": 25,
+          "Hero": 75,
+          "justification": "Holds ultimate political power and authority (Hero), capable of judgment and command, but relies entirely on others for physical defense and was previously deceived by Cawdor (Fool)."
+        },
+        "angel-demon": {
+          "Angel": 95,
+          "Demon": 5,
+          "justification": "The embodiment of virtuous, legitimate rule. Dispenses justice and honor, showing kindness and appreciation ('smack of honour')."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 90,
+          "Adventurer": 10,
+          "justification": "Upholds the established hierarchy and order. All actions (rewarding, punishing) are serious and predictable according to royal protocol."
+        }
+      },
+      "MALCOLM": {
+        "fool-hero": {
+          "Fool": 35,
+          "Hero": 65,
+          "justification": "Competent prince, capable of identifying and addressing the Sergeant, demonstrating awareness and respect, though not the primary actor in the scene."
+        },
+        "angel-demon": {
+          "Angel": 90,
+          "Demon": 10,
+          "justification": "Loyal son and prince, concerned for the welfare of the soldiers who protected him ('Hail, brave friend!')."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 85,
+          "Adventurer": 15,
+          "justification": "Adheres strictly to court protocol and military respect, reinforcing the established order."
+        }
+      },
+      "Sergeant": {
+        "fool-hero": {
+          "Fool": 30,
+          "Hero": 70,
+          "justification": "Highly capable soldier who fought bravely ('hardy soldier'), demonstrating high competence. However, he is currently physically weak and wounded ('faint, my gashes cry for help')."
+        },
+        "angel-demon": {
+          "Angel": 90,
+          "Demon": 10,
+          "justification": "Fought for the King and justice, displaying loyalty and honor, which Duncan explicitly recognizes."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 40,
+          "Adventurer": 60,
+          "justification": "His role is traditional (soldier/messenger), but his language is highly creative, dramatic, and unpredictable, using elaborate, almost poetic metaphors to describe the battle ('spent swimmers,' 'cannons overcharged')."
+        }
+      },
+      "ROSS": {
+        "fool-hero": {
+          "Fool": 25,
+          "Hero": 75,
+          "justification": "Highly competent Thane and effective messenger, capable of delivering complex military and political news accurately and efficiently."
+        },
+        "angel-demon": {
+          "Angel": 90,
+          "Demon": 10,
+          "justification": "A loyal agent of the King, focused on reporting victory and justice against traitors."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 85,
+          "Adventurer": 15,
+          "justification": "Strictly adheres to protocol, delivering official titles and news, reinforcing the established hierarchy and the consequences of treason."
+        }
+      },
+      "LENNOX": {
+        "fool-hero": {
+          "Fool": 40,
+          "Hero": 60,
+          "justification": "Competent courtier and observer, capable of interpreting Ross's demeanor, but plays a minimal role in the action."
+        },
+        "angel-demon": {
+          "Angel": 80,
+          "Demon": 20,
+          "justification": "Loyal courtier present to witness and support the King."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 80,
+          "Adventurer": 20,
+          "justification": "Engages in standard, predictable court behavior."
+        }
+      },
+      "MACBETH (Mentioned)": {
+        "fool-hero": {
+          "Fool": 5,
+          "Hero": 95,
+          "justification": "Described as having superhuman capability, valor, and purpose ('brave Macbeth,' 'valour's minion'), demonstrating extreme competence and power in battle."
+        },
+        "angel-demon": {
+          "Angel": 90,
+          "Demon": 10,
+          "justification": "Currently viewed as the epitome of loyalty and virtue, whose extreme violence is sanctioned and directed toward justice and the defense of the realm."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 60,
+          "Adventurer": 40,
+          "justification": "His actions serve the established order (Traditionalist), but the sheer, excessive, and creative brutality of his fighting ('unseam'd him from the nave to the chaps') introduces an element of unpredictable extremity (Adventurer)."
+        }
+      },
+      "MACDONWALD (Mentioned)": {
+        "fool-hero": {
+          "Fool": 70,
+          "Hero": 30,
+          "justification": "Initially capable of leading a revolt, but ultimately proven incompetent and weak against Macbeth, resulting in his humiliating defeat and death ('faced the slave')."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Described as 'merciless,' a 'rebel,' and swarming with 'multiplying villanies of nature.' Pure corruption and treason."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 10,
+          "Adventurer": 90,
+          "justification": "His entire existence in the scene is defined by his revolutionary act of rebellion against the established political order."
+        }
+      },
+      "Thane of Cawdor (Mentioned)": {
+        "fool-hero": {
+          "Fool": 60,
+          "Hero": 40,
+          "justification": "Capable enough to assist the enemy and lead a conflict, but ultimately failed and was easily exposed and condemned by the King."
+        },
+        "angel-demon": {
+          "Angel": 10,
+          "Demon": 90,
+          "justification": "The 'most disloyal traitor' who deceived the King's 'bosom interest.' Pure corruption."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 15,
+          "Adventurer": 85,
+          "justification": "Engaged in treason and rebellion, seeking to disrupt the traditional political structure."
+        }
+      }
+    },
+    "actions": {
+      "evt_1": {
+        "title": "Request report",
+        "description": "Malcolm greets the wounded Sergeant and asks him to 'Say to the king the knowledge of the broil / As thou didst leave it.'",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "MALCOLM"
+        ],
+        "receivers": [
+          "Sergeant"
+        ]
+      },
+      "evt_2": {
+        "title": "Report victory",
+        "description": "The Sergeant delivers the first part of his report, detailing the initial stalemate and Macbeth's heroic action in slaying the rebel Macdonwald.",
+        "type": "One-to-Many (1:M)",
+        "initiators": [
+          "Sergeant"
+        ],
+        "receivers": [
+          "DUNCAN",
+          "MALCOLM",
+          "LENNOX"
+        ]
+      },
+      "evt_3": {
+        "title": "Report counter-attack",
+        "description": "The Sergeant continues his report, describing the immediate second assault by the Norweyan lord and the fierce, successful defense mounted by Macbeth and Banquo.",
+        "type": "One-to-Many (1:M)",
+        "initiators": [
+          "Sergeant"
+        ],
+        "receivers": [
+          "DUNCAN",
+          "MALCOLM",
+          "LENNOX"
+        ]
+      },
+      "evt_4": {
+        "title": "Order medical aid",
+        "description": "Recognizing the Sergeant's wounds, Duncan praises him and orders attendants to 'Go get him surgeons.'",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "DUNCAN"
+        ],
+        "receivers": [
+          "Sergeant"
+        ]
+      },
+      "evt_5": {
+        "title": "Report treason and victory",
+        "description": "Ross arrives and reports the final conclusion of the war, specifically naming the Thane of Cawdor as a 'disloyal traitor' who assisted Norway, and confirming that Macbeth secured the ultimate victory.",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "ROSS"
+        ],
+        "receivers": [
+          "DUNCAN"
+        ]
+      },
+      "evt_6": {
+        "title": "Order execution",
+        "description": "Based on Ross's report of treason, Duncan orders the immediate death of the Thane of Cawdor: 'go pronounce his present death.'",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "DUNCAN"
+        ],
+        "receivers": [
+          "Thane of Cawdor"
+        ]
+      },
+      "evt_7": {
+        "title": "Bestow title",
+        "description": "Duncan rewards Macbeth for his valor by commanding that he be greeted 'with his former title' (Thane of Cawdor).",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "DUNCAN"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_8": {
+        "title": "Accept mission",
+        "description": "Ross accepts the King's command to oversee the execution of Cawdor and the transfer of the title to Macbeth: 'I'll see it done.'",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "ROSS"
+        ],
+        "receivers": [
+          "DUNCAN"
+        ]
+      }
+    }
+  },
+  "Act 1, Scene 3": {
+    "characters": {
+      "First Witch": {
+        "fool-hero": {
+          "Fool": 10,
+          "Hero": 90,
+          "justification": "Demonstrates high innate potency by controlling natural forces (winds) and possessing powerful, accurate prophetic knowledge. Highly capable in malice."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Explicitly malicious and corrupt, focused on petty cruelty and the destruction of others ('I'll do, I'll do, and I'll do')."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 15,
+          "Adventurer": 85,
+          "justification": "Highly unpredictable and creative in her methods (sailing in a sieve, using spells and rhymes) to disrupt established order."
+        }
+      },
+      "Second Witch": {
+        "fool-hero": {
+          "Fool": 10,
+          "Hero": 90,
+          "justification": "Shares the collective supernatural power of the Weird Sisters, contributing to the control of the elements and the delivery of prophecy."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Engages in dark acts ('Killing swine') and contributes to the corrupting prophecies, aligning fully with the demonic orientation."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 15,
+          "Adventurer": 85,
+          "justification": "Part of the unconventional, chaotic group that uses creative language and methods to introduce instability."
+        }
+      },
+      "Third Witch": {
+        "fool-hero": {
+          "Fool": 10,
+          "Hero": 90,
+          "justification": "Shares the collective supernatural power and delivers the most potent and destabilizing prophecy ('thou shalt be king hereafter!')."
+        },
+        "angel-demon": {
+          "Angel": 5,
+          "Demon": 95,
+          "justification": "Delivers the ultimate corrupting promise, directly tempting Macbeth toward regicide."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 15,
+          "Adventurer": 85,
+          "justification": "Part of the chaotic group, focused on introducing radical, unpredictable change into the political structure."
+        }
+      },
+      "Macbeth": {
+        "fool-hero": {
+          "Fool": 30,
+          "Hero": 70,
+          "justification": "High innate potency (proven warrior, Thane), but demonstrates immediate internal incompetence and paralysis ('function is smother'd in surmise') when faced with the moral choice, reducing his effective Hero score."
+        },
+        "angel-demon": {
+          "Angel": 35,
+          "Demon": 65,
+          "justification": "Starts loyal (Angel), but his internal monologue is dominated by the 'horrid image' of murder and ambition, showing a rapid and profound shift toward corruption (Demon)."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 20,
+          "Adventurer": 80,
+          "justification": "His current status is Traditionalist, but his entire focus in the scene shifts to the highly unpredictable, revolutionary act of seizing the crown (Adventurer)."
+        }
+      },
+      "Banquo": {
+        "fool-hero": {
+          "Fool": 15,
+          "Hero": 85,
+          "justification": "A capable warrior who demonstrates high intellectual capability and moral strength by resisting temptation and providing clear-headed warnings."
+        },
+        "angel-demon": {
+          "Angel": 90,
+          "Demon": 10,
+          "justification": "Acts as the moral compass, recognizing the Witches as 'instruments of darkness' and remaining loyal and cautious, representing virtue."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 80,
+          "Adventurer": 20,
+          "justification": "Highly focused on established order, reality, and duty. He warns against the unpredictable and chaotic nature of the prophecies."
+        }
+      },
+      "Ross": {
+        "fool-hero": {
+          "Fool": 35,
+          "Hero": 65,
+          "justification": "Competent and effective messenger, capable of delivering official news and honors accurately, but lacks independent power."
+        },
+        "angel-demon": {
+          "Angel": 95,
+          "Demon": 5,
+          "justification": "An agent of the King, representing the virtuous, legitimate social order and delivering deserved praise."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 90,
+          "Adventurer": 10,
+          "justification": "Strictly adheres to protocol, reinforcing the established hierarchy and the predictable flow of royal honors."
+        }
+      },
+      "Angus": {
+        "fool-hero": {
+          "Fool": 35,
+          "Hero": 65,
+          "justification": "Competent and effective messenger, capable of explaining the complex political and legal reasons for the former Thane's downfall."
+        },
+        "angel-demon": {
+          "Angel": 95,
+          "Demon": 5,
+          "justification": "An agent of the King, focused on justice and explaining the consequences of treason, upholding the moral law."
+        },
+        "traditionalist-adventurer": {
+          "Traditionalist": 90,
+          "Adventurer": 10,
+          "justification": "Strictly adheres to protocol, reinforcing the established hierarchy and the predictable consequences of breaking the law."
+        }
+      }
+    },
+    "actions": {
+      "evt_1": {
+        "title": "Plan torment",
+        "description": "The First Witch details her plan to torment the sailor (master o' the Tiger) for nine times nine weeks, and the Second and Third Witches contribute by offering winds to aid the curse.",
+        "type": "Many-to-One (M:1)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "Sailor"
+        ]
+      },
+      "evt_2": {
+        "title": "Perform ritual",
+        "description": "The Witches (acting as 'ALL') join hands and perform a collective chant and dance ('go about, about') to finalize their charm before Macbeth arrives.",
+        "type": "Many-to-Many (M:N)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ]
+      },
+      "evt_3": {
+        "title": "Deliver prophecy",
+        "description": "The three Witches collectively hail Macbeth with three titles: Thane of Glamis, Thane of Cawdor, and King hereafter.",
+        "type": "Many-to-One (M:1)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_4": {
+        "title": "Deliver prophecy",
+        "description": "After being challenged by Banquo, the Witches deliver a paradoxical prophecy concerning his future, stating he will be father to kings.",
+        "type": "Many-to-One (M:1)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "Banquo"
+        ]
+      },
+      "evt_5": {
+        "title": "Vanish",
+        "description": "The Witches disappear into the air after Macbeth demands they speak further, leaving Macbeth and Banquo confused.",
+        "type": "Many-to-Many (M:N)",
+        "initiators": [
+          "First Witch",
+          "Second Witch",
+          "Third Witch"
+        ],
+        "receivers": [
+          "Macbeth",
+          "Banquo"
+        ]
+      },
+      "evt_6": {
+        "title": "Bestow title",
+        "description": "Ross, acting on behalf of King Duncan, greets Macbeth with the title 'thane of Cawdor,' confirming the second prophecy.",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "Ross"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_7": {
+        "title": "Explain treason",
+        "description": "Angus explains that the former Thane of Cawdor was executed for 'treasons capital, confess'd and proved,' justifying the transfer of the title to Macbeth.",
+        "type": "One-to-Many (1:M)",
+        "initiators": [
+          "Angus"
+        ],
+        "receivers": [
+          "Macbeth",
+          "Banquo"
+        ]
+      },
+      "evt_8": {
+        "title": "Test ambition",
+        "description": "Macbeth immediately questions Banquo about whether he now hopes his children will be kings, testing Banquo's reaction to the confirmed prophecy.",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "Macbeth"
+        ],
+        "receivers": [
+          "Banquo"
+        ]
+      },
+      "evt_9": {
+        "title": "Warn against deceit",
+        "description": "Banquo warns Macbeth that 'the instruments of darkness tell us truths' to 'betray's in deepest consequence,' cautioning him against trusting the Witches.",
+        "type": "One-to-One (1:1)",
+        "initiators": [
+          "Banquo"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_10": {
+        "title": "Contemplate regicide",
+        "description": "In an extended aside, Macbeth struggles internally with the 'horrid image' of murdering Duncan to achieve the final prophecy, concluding he might let 'chance may crown me, Without my stir.'",
+        "type": "Self-loop (1→1)",
+        "initiators": [
+          "Macbeth"
+        ],
+        "receivers": [
+          "Macbeth"
+        ]
+      },
+      "evt_11": {
+        "title": "Propose future discussion",
+        "description": "Macbeth apologizes for his distraction and proposes that he and Banquo discuss the strange events ('what hath chanced') privately at a later time.",
+        "type": "One-to-Many (1:M)",
+        "initiators": [
+          "Macbeth"
+        ],
+        "receivers": [
+          "Banquo",
+          "Ross",
+          "Angus"
+        ]
+      }
+    }
+  }
+}
