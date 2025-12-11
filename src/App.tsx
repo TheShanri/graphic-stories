@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import InteractiveGraph, { type StoryGraph } from './components/InteractiveGraph'
+import CharacterDossier from './components/CharacterDossier'
 
 type Story = {
   id: string
@@ -19,9 +20,39 @@ type SceneEvent = {
   receivers: string[]
 }
 
+type RawCharacterStat = {
+  justification?: string
+  [key: string]: number | string | undefined
+}
+
+type RawCharacterProfile = {
+  'fool-hero'?: RawCharacterStat
+  'angel-demon'?: RawCharacterStat
+  'traditionalist-adventurer'?: RawCharacterStat
+}
+
+type StatPair = {
+  leftLabel: string
+  rightLabel: string
+  left: number
+  right: number
+  justification?: string
+}
+
+type CharacterSceneStats = {
+  foolHero?: StatPair
+  angelDemon?: StatPair
+  tradAdv?: StatPair
+}
+
 type Scene = {
-  characters: Record<string, unknown>
+  characters: Record<string, RawCharacterProfile>
   actions: Record<string, SceneEvent & { type?: string }>
+}
+
+type CharacterArcPoint = {
+  sceneName: string
+  stats: CharacterSceneStats
 }
 
 type StoryScenes = Record<string, Scene>
@@ -44,6 +75,31 @@ const sortEventKeys = (keys: string[]) => {
     return numberFromKey(a) - numberFromKey(b)
   })
   return sorted
+}
+
+const buildStatPair = (entry: RawCharacterStat | undefined, leftLabel: string, rightLabel: string): StatPair | undefined => {
+  if (!entry) {
+    return undefined
+  }
+  const left = typeof entry[leftLabel] === 'number' ? Number(entry[leftLabel]) : 0
+  const right = typeof entry[rightLabel] === 'number' ? Number(entry[rightLabel]) : 0
+  const justification = typeof entry.justification === 'string' ? entry.justification : ''
+  return { leftLabel, rightLabel, left, right, justification }
+}
+
+const normalizeCharacterStats = (profile: RawCharacterProfile | undefined): CharacterSceneStats | undefined => {
+  if (!profile) {
+    return undefined
+  }
+  const stats: CharacterSceneStats = {
+    foolHero: buildStatPair(profile['fool-hero'], 'Fool', 'Hero'),
+    angelDemon: buildStatPair(profile['angel-demon'], 'Angel', 'Demon'),
+    tradAdv: buildStatPair(profile['traditionalist-adventurer'], 'Traditionalist', 'Adventurer'),
+  }
+  if (!stats.foolHero && !stats.angelDemon && !stats.tradAdv) {
+    return undefined
+  }
+  return stats
 }
 
 const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
@@ -85,7 +141,11 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
     return links
   })
 
-  const characterNodes: StoryGraph['nodes'] = characterIds.map((id) => ({ id, label: id }))
+  const characterNodes: StoryGraph['nodes'] = characterIds.map((id) => ({
+    id,
+    label: id,
+    stats: normalizeCharacterStats(scene.characters[id]),
+  }))
   const groupNodesArray = Array.from(groupNodes).map((id) => ({ id, label: id, group: 'group' }))
 
   return { nodes: [...characterNodes, ...groupNodesArray], edges }
@@ -97,6 +157,7 @@ function App() {
   const [storyErrors, setStoryErrors] = useState<Record<string, string>>({})
   const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
   const [sceneIndex, setSceneIndex] = useState(0)
+  const [selectedCharacter, setSelectedCharacter] = useState<{ id: string; stats?: CharacterSceneStats } | null>(null)
 
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
   const activeScenes = storyScenes[activeId]
@@ -109,6 +170,24 @@ function App() {
   const currentScene = activeScenes?.[currentSceneKey]
 
   const graph = useMemo(() => buildGraphFromScene(currentScene), [currentScene])
+
+  useEffect(() => {
+    setSelectedCharacter(null)
+  }, [activeId, currentSceneKey])
+
+  const getCharacterArc = (characterId: string): CharacterArcPoint[] => {
+    const scenes = storyScenes[activeId]
+    if (!scenes) {
+      return []
+    }
+    return sortEventKeys(Object.keys(scenes))
+      .map((sceneName) => {
+        const sceneProfile = scenes[sceneName]?.characters?.[characterId]
+        const stats = normalizeCharacterStats(sceneProfile)
+        return stats ? { sceneName, stats } : null
+      })
+      .filter((item): item is CharacterArcPoint => Boolean(item))
+  }
 
   useEffect(() => {
     const targetId = activeId
@@ -177,6 +256,11 @@ function App() {
 
   const graphJson = graph ? JSON.stringify(graph, null, 2) : null
 
+  const handleNodeClick = (nodeId: string) => {
+    const nodeStats = graph?.nodes.find((node) => node.id === nodeId)?.stats
+    setSelectedCharacter({ id: nodeId, stats: nodeStats })
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -233,7 +317,22 @@ function App() {
               <div className="viz-hint">Live network canvas</div>
               <div className="viz-chart" role="img" aria-label={`Network graph for ${activeStory.title}`}>
                 {graph ? (
-                  <InteractiveGraph key={currentSceneKey ?? 'no-scene'} graph={graph} />
+                  <>
+                    <InteractiveGraph
+                      key={currentSceneKey ?? 'no-scene'}
+                      graph={graph}
+                      onNodeClick={(node) => handleNodeClick(node.id)}
+                    />
+                    {selectedCharacter ? (
+                      <CharacterDossier
+                        characterId={selectedCharacter.id}
+                        arc={getCharacterArc(selectedCharacter.id)}
+                        currentStats={selectedCharacter.stats}
+                        sceneName={currentSceneKey}
+                        onClose={() => setSelectedCharacter(null)}
+                      />
+                    ) : null}
+                  </>
                 ) : (
                   <div className="viz-placeholder" aria-live="polite">
                     {isLoadingActiveStory ? 'Loading story graph…' : 'Select a story to load its graph data.'}
