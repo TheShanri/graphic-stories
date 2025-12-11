@@ -102,24 +102,51 @@ const normalizeCharacterStats = (profile: RawCharacterProfile | undefined): Char
   return stats
 }
 
+const normalizeName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/\s+/g, ' ').toLowerCase()
+
+const formatDisplayName = (name: string) => {
+  const cleaned = name.replace(/\s*\(.*?\)\s*/g, '').trim()
+  if (!cleaned) {
+    return name
+  }
+  return cleaned
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ')
+}
+
 const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
   if (!scene) {
     return null
   }
 
-  const characterIds = Object.keys(scene.characters)
-  const groupNodes = new Set<string>()
+  const characterMap = new Map<string, { label: string; stats?: CharacterSceneStats }>()
+  Object.entries(scene.characters).forEach(([rawId, profile]) => {
+    const normalizedId = normalizeName(rawId)
+    if (!characterMap.has(normalizedId)) {
+      characterMap.set(normalizedId, {
+        label: formatDisplayName(rawId),
+        stats: normalizeCharacterStats(profile),
+      })
+    }
+  })
+
+  const groupNodes = new Map<string, string>()
+
+  const characterIds = Array.from(characterMap.keys())
 
   const expandParticipants = (participants: string[]) => {
     const expanded: string[] = []
     participants.forEach((id) => {
-      if (id === 'ALL') {
+      const normalizedId = normalizeName(id)
+      if (id.trim().toUpperCase() === 'ALL') {
         expanded.push(...characterIds)
-      } else if (characterIds.includes(id)) {
-        expanded.push(id)
+      } else if (characterIds.includes(normalizedId)) {
+        expanded.push(normalizedId)
       } else {
-        expanded.push(id)
-        groupNodes.add(id)
+        expanded.push(normalizedId)
+        groupNodes.set(normalizedId, formatDisplayName(id))
       }
     })
     return expanded
@@ -141,12 +168,23 @@ const buildGraphFromScene = (scene: Scene | undefined): StoryGraph | null => {
     return links
   })
 
-  const characterNodes: StoryGraph['nodes'] = characterIds.map((id) => ({
-    id,
-    label: id,
-    stats: normalizeCharacterStats(scene.characters[id]),
-  }))
-  const groupNodesArray = Array.from(groupNodes).map((id) => ({ id, label: id, group: 'group' }))
+  const usedNodeIds = new Set<string>()
+  edges.forEach((edge) => {
+    usedNodeIds.add(edge.source)
+    usedNodeIds.add(edge.target)
+  })
+
+  const characterNodes: StoryGraph['nodes'] = Array.from(characterMap.entries())
+    .filter(([id]) => usedNodeIds.has(id))
+    .map(([id, data]) => ({
+      id,
+      label: data.label,
+      stats: data.stats,
+    }))
+
+  const groupNodesArray = Array.from(groupNodes.entries())
+    .filter(([id]) => usedNodeIds.has(id))
+    .map(([id, label]) => ({ id, label, group: 'group' }))
 
   return { nodes: [...characterNodes, ...groupNodesArray], edges }
 }

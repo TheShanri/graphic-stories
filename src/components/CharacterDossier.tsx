@@ -46,6 +46,7 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     accessor: (stats: CharacterSceneStats) => StatPair | undefined,
     accent: string,
   ) => {
+    const firstStat = arc.map((point) => accessor(point.stats)).find(Boolean)
     const entries = arc
       .map((point, index) => {
         const stat = accessor(point.stats)
@@ -64,6 +65,9 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     const yScale = d3.scaleLinear().domain([0, 100]).range([chartHeight - chartPadding, chartPadding])
 
     const path = buildPath(entries, xScale, yScale)
+    const xTicks = entries.map((entry, index) => ({ value: index + 1, x: entry.x }))
+    const topLabel = firstStat?.rightLabel ?? label.split('→')[1]?.trim() ?? 'High'
+    const bottomLabel = firstStat?.leftLabel ?? label.split('→')[0]?.trim() ?? 'Low'
 
     return (
       <div className="dossier-chart" key={label}>
@@ -81,6 +85,33 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
                 </text>
               </g>
             ))}
+          </g>
+          <g className="chart-axes">
+            <line x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - chartPadding + 8} y2={chartHeight - chartPadding + 8} stroke="rgba(255,255,255,0.4)" />
+            {xTicks.map((tick) => (
+              <text key={tick.value} x={xScale(tick.x)} y={chartHeight - chartPadding + 22} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.8)">
+                {tick.value}
+              </text>
+            ))}
+            <text x={chartWidth / 2} y={chartHeight - 4} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
+              Scene number
+            </text>
+            <text x={chartPadding - 20} y={chartPadding - 8} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+              {topLabel}
+            </text>
+            <text x={chartPadding - 20} y={chartHeight - chartPadding + 4} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+              {bottomLabel}
+            </text>
+            <text
+              x={chartPadding - 36}
+              y={(chartHeight - chartPadding + chartPadding) / 2}
+              textAnchor="middle"
+              fontSize={11}
+              fill="rgba(255,255,255,0.7)"
+              transform={`rotate(-90 ${chartPadding - 36} ${(chartHeight - chartPadding + chartPadding) / 2})`}
+            >
+              Alignment
+            </text>
           </g>
           <path d={path} fill="none" stroke={accent} strokeWidth={2.5} />
           {entries.map((entry) => (
