@@ -525,10 +525,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© {new Date().getFullYear()} Graphic Stories Lab · Built with React, TypeScript, and SWC.</p>
-        <p>
-          Need a demo deck? <a href="mailto:hello@graphicstories.edu">hello@graphicstories.edu</a>
-        </p>
+        <p>Nate, Tabia, and Shahriar · Built with React, TypeScript, and SWC.</p>
       </footer>
     </div>
   )
