@@ -429,6 +429,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 10,
+                    pointerEvents: 'none', /* FIX: Allows mouse to pass through to the node below */
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
