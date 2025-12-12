@@ -286,14 +286,15 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
         <defs>
           <marker
             id="arrowhead"
-            viewBox="0 0 12 12"
-            refX="10"
-            refY="6"
-            markerWidth="12"
-            markerHeight="12"
+            viewBox="0 0 10 10"
+            refX="29" 
+            refY="5"
+            markerWidth="10"
+            markerHeight="10"
             orient="auto"
+            markerUnits="userSpaceOnUse"
           >
-            <path d="M0,0 L12,6 L0,12 L3.5,6 Z" fill="rgba(255,255,255,0.75)" />
+            <path d="M0,0 L10,5 L0,10 L3,5 Z" fill="rgba(255,255,255,0.75)" />
           </marker>
         </defs>
         <g className="graph-links" stroke="rgba(255,255,255,0.45)">
@@ -321,21 +322,35 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
               setHoveredEdge({ x: event.clientX + 10, y: event.clientY + 10, label: edge.relationship })
             }
 
+            const isHovered = hoveredEdgeKey === edge.renderKey
+
             return (
               <g key={edge.renderKey}>
+                {/* Visual Line: Pointer events disabled so the hit target handles them */}
                 <path
                   className="graph-link"
                   d={pathD}
                   fill="none"
-                  strokeWidth={hoveredEdgeKey === edge.renderKey ? 2.5 : 1.5}
-                  markerEnd="url(#arrowhead)"
+                  strokeWidth={isHovered ? 2.5 : 1.5}
+                  stroke={isHovered ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.45)'}
+                  markerEnd={isHovered ? 'url(#arrowhead)' : undefined}
+                  style={{ pointerEvents: 'none', transition: 'stroke 0.2s, stroke-width 0.2s' }}
+                />
+                
+                {/* Invisible Hit Target: Thick stroke for stable hovering */}
+                <path
+                  d={pathD}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth={20}
+                  style={{ cursor: 'pointer' }}
                   onPointerEnter={(event) => {
                     setHoveredEdgeKey(edge.renderKey)
                     handleEdgePointerMove(event)
                   }}
                   onPointerMove={handleEdgePointerMove}
                   onPointerLeave={() => {
-                    setHoveredEdgeKey((current) => (current === edge.renderKey ? null : current))
+                    setHoveredEdgeKey(null)
                     setHoveredEdge(null)
                   }}
                 />
@@ -389,7 +404,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
             }
 
             const barWidth = 180
-            const cardWidth = barWidth + 120
+            const cardWidth = barWidth + 180
             const cardHeight = bars.length * 44 + 44
 
             return (
