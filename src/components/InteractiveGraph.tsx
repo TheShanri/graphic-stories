@@ -459,14 +459,16 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
                               width: barWidth,
                               height: 12,
                               borderRadius: 999,
-                              background: 'linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12))',
+                              /* FIX: Warm gradient background for the "Left" archetype */
+                              background: 'linear-gradient(90deg, rgba(255, 115, 70, 0.65), rgba(255, 199, 95, 0.75))',
                               overflow: 'hidden',
                             }}
                           >
                             <div
                               style={{
                                 position: 'absolute',
-                                left: 0,
+                                /* FIX: Anchor to right so "Hero" (Blue) grows from the "Hero" label side */
+                                right: 0,
                                 top: 0,
                                 bottom: 0,
                                 width: `${fillPercent}%`,
