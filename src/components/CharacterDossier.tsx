@@ -1,5 +1,10 @@
 import d3, { type LinearScale } from '../vendor/d3-lite'
 
+const getSceneCode = (sceneName: string) => {
+  const match = sceneName.match(/Act (\d+), Scene (\d+)/i)
+  return match ? `A${match[1]}S${match[2]}` : sceneName
+}
+
 export type StatPair = {
   leftLabel: string
   rightLabel: string
@@ -62,10 +67,10 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     }
 
     const xScale = d3.scaleLinear().domain([0, Math.max(entries.length - 1, 1)]).range([chartPadding, chartWidth - chartPadding])
-    const yScale = d3.scaleLinear().domain([0, 100]).range([chartHeight - chartPadding, chartPadding])
+    const yScale = d3.scaleLinear().domain([0, 100]).range([chartHeight - 20, 20])
 
     const path = buildPath(entries, xScale, yScale)
-    const xTicks = entries.map((entry, index) => ({ value: index + 1, x: entry.x }))
+    const xTicks = entries.map((entry) => ({ scene: entry.scene, x: entry.x }))
     const topLabel = firstStat?.rightLabel ?? label.split('→')[1]?.trim() ?? 'High'
     const bottomLabel = firstStat?.leftLabel ?? label.split('→')[0]?.trim() ?? 'Low'
 
@@ -94,19 +99,19 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
             ))}
           </g>
           <g className="chart-axes">
-            <line x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - chartPadding + 8} y2={chartHeight - chartPadding + 8} stroke="rgba(255,255,255,0.4)" />
+            <line x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - 12} y2={chartHeight - 12} stroke="rgba(255,255,255,0.4)" />
             {xTicks.map((tick) => (
-              <text key={tick.value} x={xScale(tick.x)} y={chartHeight - chartPadding + 22} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.8)">
-                {tick.value}
+              <text key={tick.scene} x={xScale(tick.x)} y={chartHeight - 2} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.8)">
+                {getSceneCode(tick.scene)}
               </text>
             ))}
             <text x={chartWidth / 2} y={chartHeight - 4} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
               Scene number
             </text>
-            <text x={chartPadding - 20} y={chartPadding - 8} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+            <text x={chartPadding - 20} y={15} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {topLabel}
             </text>
-            <text x={chartPadding - 20} y={chartHeight - chartPadding + 4} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+            <text x={chartPadding - 20} y={chartHeight - 5} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {bottomLabel}
             </text>
             <text
