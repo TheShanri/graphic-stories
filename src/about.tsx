@@ -124,8 +124,7 @@ function AboutPage() {
       </section>
 
       <footer className="about-footer">
-        <p>© 2025 Graphic Stories Lab</p>
-        <p>Built with React, TypeScript, and SWC</p>
+        <p>Nate, Tabia, and Shahriar · Built with React, TypeScript, and SWC.</p>
       </footer>
     </div>
   )

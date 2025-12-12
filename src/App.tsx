@@ -529,7 +529,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© 2025 Graphic Stories Lab · Built with React, TypeScript, and SWC.</p>
+        <p>Nate, Tabia, and Shahriar · Built with React, TypeScript, and SWC.</p>
       </footer>
     </div>
   )
