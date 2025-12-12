@@ -67,10 +67,11 @@
 
 @media (min-width: 1024px) {
   .workspace {
-    /* Default width: Sidebar takes 240px-300px */
+    /* Default width */
     grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
     align-items: start;
-    transition: grid-template-columns 300ms ease; /* Smooth transition */
+    /* Use a custom bezier for a snappy, premium 'slide' feel */
+    transition: grid-template-columns 400ms cubic-bezier(0.2, 0, 0, 1);
   }
 
   /* When library is collapsed, first column shrinks to 60px */
@@ -84,10 +85,17 @@
   border-radius: 1.75rem;
   padding: 1.75rem;
   box-shadow: var(--panel-shadow);
-  transition: padding 300ms ease; /* Animate padding changes */
-  overflow: hidden; /* Hide content during transition */
+  transition: padding 400ms cubic-bezier(0.2, 0, 0, 1); /* Match workspace transition */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* FIX: Prevent content from squishing while the panel shrinks */
+.stories-panel > div:not(.vertical-label),
+.stories-panel > ul,
+.stories-panel > button:not(.icon-only) {
+  min-width: 220px; /* Forces content to stay wide so it slides out of view instead of wrapping */
 }
 
 .stories-panel.collapsed {
