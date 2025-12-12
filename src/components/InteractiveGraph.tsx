@@ -414,6 +414,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
                 y={Math.max(8, node.y - cardHeight / 2)}
                 width={cardWidth}
                 height={cardHeight}
+                style={{ pointerEvents: 'none' }}
               >
                 <div
                   style={{
