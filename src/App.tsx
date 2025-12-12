@@ -206,7 +206,7 @@ function App() {
   const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
   const [sceneIndex, setSceneIndex] = useState(0)
   const [selectedCharacter, setSelectedCharacter] = useState<{ id: string; stats?: CharacterSceneStats } | null>(null)
-  const [isLibraryCollapsed, setIsLibraryCollapsed] = useState(false)
+  const [isLibraryCollapsed, setIsLibraryCollapsed] = useState(true)
 
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
   const activeScenes = storyScenes[activeId]
@@ -355,29 +355,24 @@ function App() {
           </div>
 
           {!isLibraryCollapsed ? (
-            <>
-              <button className="ghost-button" type="button" style={{ width: '100%', marginTop: '1rem', marginBottom: '0.5rem' }}>
-                + Submit Narrative
-              </button>
-              <ul className="story-list">
-                {STORIES.map((story) => (
-                  <li key={story.id}>
-                    <button
-                      type="button"
-                      className={`story-item ${story.id === activeId ? 'selected' : ''}`}
-                      onClick={() => setActiveId(story.id)}
-                    >
-                      <div className="story-meta">
-                        <span className="discipline">{story.discipline}</span>
-                        <span className="duration">{story.duration}</span>
-                      </div>
-                      <h3>{story.title}</h3>
-                      <p>{story.authors}</p>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul className="story-list">
+              {STORIES.map((story) => (
+                <li key={story.id}>
+                  <button
+                    type="button"
+                    className={`story-item ${story.id === activeId ? 'selected' : ''}`}
+                    onClick={() => setActiveId(story.id)}
+                  >
+                    <div className="story-meta">
+                      <span className="discipline">{story.discipline}</span>
+                      <span className="duration">{story.duration}</span>
+                    </div>
+                    <h3>{story.title}</h3>
+                    <p>{story.authors}</p>
+                  </button>
+                </li>
+              ))}
+            </ul>
           ) : (
             <div
               className="vertical-label"
