@@ -206,6 +206,7 @@ function App() {
   const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
   const [sceneIndex, setSceneIndex] = useState(0)
   const [selectedCharacter, setSelectedCharacter] = useState<{ id: string; stats?: CharacterSceneStats } | null>(null)
+  const [isLibraryCollapsed, setIsLibraryCollapsed] = useState(false)
 
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
   const activeScenes = storyScenes[activeId]
@@ -332,35 +333,72 @@ function App() {
         </nav>
       </header>
 
-      <main className="workspace" aria-live="polite">
-        <section className="stories-panel" aria-label="Story library">
+      <main className={`workspace ${isLibraryCollapsed ? 'library-collapsed' : ''}`.trim()} aria-live="polite">
+        <section className={`stories-panel ${isLibraryCollapsed ? 'collapsed' : ''}`} aria-label="Story library">
           <div className="panel-header">
-            <div>
-              <p className="eyebrow">Library</p>
-              <h2>Story Index</h2>
-            </div>
-            <button className="ghost-button" type="button">
-              + Submit Narrative
+            {!isLibraryCollapsed && (
+              <div>
+                <p className="eyebrow">Library</p>
+                <h2>Story Index</h2>
+              </div>
+            )}
+            <button
+              className="ghost-button icon-only"
+              type="button"
+              onClick={() => setIsLibraryCollapsed(!isLibraryCollapsed)}
+              aria-label={isLibraryCollapsed ? 'Expand Library' : 'Collapse Library'}
+              title={isLibraryCollapsed ? 'Expand Library' : 'Collapse Library'}
+              style={{ padding: '0.5rem', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              {isLibraryCollapsed ? '»' : '«'}
             </button>
           </div>
-          <ul className="story-list">
-            {STORIES.map((story) => (
-              <li key={story.id}>
-                <button
-                  type="button"
-                  className={`story-item ${story.id === activeId ? 'selected' : ''}`}
-                  onClick={() => setActiveId(story.id)}
-                >
-                  <div className="story-meta">
-                    <span className="discipline">{story.discipline}</span>
-                    <span className="duration">{story.duration}</span>
-                  </div>
-                  <h3>{story.title}</h3>
-                  <p>{story.authors}</p>
-                </button>
-              </li>
-            ))}
-          </ul>
+
+          {!isLibraryCollapsed ? (
+            <>
+              <button className="ghost-button" type="button" style={{ width: '100%', marginTop: '1rem', marginBottom: '0.5rem' }}>
+                + Submit Narrative
+              </button>
+              <ul className="story-list">
+                {STORIES.map((story) => (
+                  <li key={story.id}>
+                    <button
+                      type="button"
+                      className={`story-item ${story.id === activeId ? 'selected' : ''}`}
+                      onClick={() => setActiveId(story.id)}
+                    >
+                      <div className="story-meta">
+                        <span className="discipline">{story.discipline}</span>
+                        <span className="duration">{story.duration}</span>
+                      </div>
+                      <h3>{story.title}</h3>
+                      <p>{story.authors}</p>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <div
+              className="vertical-label"
+              onClick={() => setIsLibraryCollapsed(false)}
+              style={{
+                writingMode: 'vertical-rl',
+                textOrientation: 'mixed',
+                transform: 'rotate(180deg)',
+                marginTop: '2rem',
+                cursor: 'pointer',
+                color: 'var(--muted-foreground)',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+                alignSelf: 'center',
+              }}
+            >
+              Story Index
+            </div>
+          )}
         </section>
 
         <section className="visualization-panel" aria-label="Visualization preview">
