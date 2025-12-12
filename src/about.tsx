@@ -76,9 +76,6 @@ function AboutPage() {
             expanding our dataset beyond Shakespeare to include diverse media and testing our archetype scoring against
             human annotations.
           </p>
-          <a className="cta" href="mailto:contact@graphicstories.vercel.app">
-            Contact the team →
-          </a>
         </article>
       </section>
 
@@ -127,10 +124,8 @@ function AboutPage() {
       </section>
 
       <footer className="about-footer">
-        <p>© {new Date().getFullYear()} Graphic Stories Lab</p>
-        <p>
-          Built with React, TypeScript, and SWC · <a href="mailto:hello@graphicstories.edu">hello@graphicstories.edu</a>
-        </p>
+        <p>© 2025 Graphic Stories Lab</p>
+        <p>Built with React, TypeScript, and SWC</p>
       </footer>
     </div>
   )

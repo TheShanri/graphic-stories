@@ -529,10 +529,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>Nate, Tabia, and Shahriar · Built with React, TypeScript, and SWC.</p>
-        <p>
-          Questions? <a href="mailto:contact@graphicstories.vercel.app">contact@graphicstories.vercel.app</a>
-        </p>
+        <p>© 2025 Graphic Stories Lab · Built with React, TypeScript, and SWC.</p>
       </footer>
     </div>
   )
