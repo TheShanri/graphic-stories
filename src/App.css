@@ -2,8 +2,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 3.5rem clamp(1.5rem, 4vw, 4.5rem) 2.5rem;
+  gap: 1.5rem; /* Reduced gap */
+  padding: 2.5rem clamp(1rem, 3vw, 3rem) 2rem; /* Tighter padding */
 }
 
 .app-header {
@@ -68,7 +68,7 @@
 @media (min-width: 1024px) {
   .workspace {
     /* minmax(0, 1fr) prevents the column from blowing out the viewport width */
-    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
     align-items: start; /* Changed from stretch to prevent height forcing */
   }
 }
