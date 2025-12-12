@@ -356,9 +356,6 @@ function App() {
 
           {!isLibraryCollapsed ? (
             <>
-              <button className="ghost-button" type="button" style={{ width: '100%', marginTop: '1rem', marginBottom: '0.5rem' }}>
-                + Submit Narrative
-              </button>
               <ul className="story-list">
                 {STORIES.map((story) => (
                   <li key={story.id}>
