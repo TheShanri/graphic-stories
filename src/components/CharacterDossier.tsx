@@ -121,10 +121,14 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
             <text x={(chartMargin.left + innerWidth) / 2} y={chartHeight - 6} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
               Scene number
             </text>
-            <text x={chartMargin.left - 8} y={chartMargin.top} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+
+            {/* Top Label: Moved up 12px to avoid overlapping "100" */}
+            <text x={chartMargin.left - 8} y={chartMargin.top - 12} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {topLabel}
             </text>
-            <text x={chartMargin.left - 8} y={chartMargin.top + innerHeight} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+
+            {/* Bottom Label: Moved down 12px to avoid overlapping "0" */}
+            <text x={chartMargin.left - 8} y={chartMargin.top + innerHeight + 12} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {bottomLabel}
             </text>
             <text
