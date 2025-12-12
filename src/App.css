@@ -67,18 +67,40 @@
 
 @media (min-width: 1024px) {
   .workspace {
-    /* minmax(0, 1fr) prevents the column from blowing out the viewport width */
+    /* Default width */
     grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
-    align-items: start; /* Changed from stretch to prevent height forcing */
+    align-items: start;
+    /* Use a custom bezier for a snappy, premium 'slide' feel */
+    transition: grid-template-columns 400ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* When library is collapsed, first column shrinks to 60px */
+  .workspace.library-collapsed {
+    grid-template-columns: 60px minmax(0, 1fr);
   }
 }
 
-.stories-panel,
-.visualization-panel {
+.stories-panel {
   background: var(--panel);
   border-radius: 1.75rem;
   padding: 1.75rem;
   box-shadow: var(--panel-shadow);
+  transition: padding 400ms cubic-bezier(0.2, 0, 0, 1); /* Match workspace transition */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* FIX: Prevent content from squishing while the panel shrinks */
+.stories-panel > div:not(.vertical-label),
+.stories-panel > ul,
+.stories-panel > button:not(.icon-only) {
+  min-width: 220px; /* Forces content to stay wide so it slides out of view instead of wrapping */
+}
+
+.stories-panel.collapsed {
+  padding: 1.5rem 0.5rem; /* Narrow padding for the strip */
+  align-items: center;
 }
 
 .panel-header {
@@ -86,6 +108,14 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  min-height: 42px; /* Prevent jumping when text is removed */
+}
+
+.visualization-panel {
+  background: var(--panel);
+  border-radius: 1.75rem;
+  padding: 1.75rem;
+  box-shadow: var(--panel-shadow);
 }
 
 h2 {
