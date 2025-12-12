@@ -39,7 +39,7 @@ const buildPath = (points: { x: number; y: number }[], xScale: LinearScale, ySca
 function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }: Props) {
   const chartWidth = 400
   const chartHeight = 160
-  const chartMargin = { top: 18, right: 16, bottom: 40, left: 72 }
+  const chartMargin = { top: 18, right: 16, bottom: 40, left: 90 }
   const innerWidth = chartWidth - chartMargin.left - chartMargin.right
   const innerHeight = chartHeight - chartMargin.top - chartMargin.bottom
 

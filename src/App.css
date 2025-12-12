@@ -228,11 +228,11 @@ h2 {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  bottom: 1rem; /* Anchors the bottom to prevent overflow clipping */
-  max-width: min(520px, 100%);
+  bottom: 1rem;
+  max-width: min(380px, 100%); /* Reduced width to make the dossier more compact */
   pointer-events: none;
   display: flex;
-  flex-direction: column; /* Ensures the panel respects the height */
+  flex-direction: column;
 }
 
 .dossier-panel {
