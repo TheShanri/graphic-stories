@@ -248,6 +248,25 @@ h2 {
   overflow-y: auto;
 }
 
+/* Custom Scrollbar for Dossier Panel */
+.dossier-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dossier-panel::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 1rem 0; /* Adds spacing so the track doesn't touch the very edges */
+}
+
+.dossier-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 99px;
+}
+
+.dossier-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .dossier-header {
   display: flex;
   justify-content: space-between;
