@@ -45,9 +45,9 @@
     transition: grid-template-columns 400ms cubic-bezier(0.2, 0, 0, 1);
   }
 
-  /* When library is collapsed, first column shrinks to 60px */
+  /* When library is collapsed, first column shrinks to 48px */
   .workspace.library-collapsed {
-    grid-template-columns: 60px minmax(0, 1fr);
+    grid-template-columns: 48px minmax(0, 1fr);
   }
 }
 
@@ -70,8 +70,32 @@
 }
 
 .stories-panel.collapsed {
-  padding: 1.5rem 0.5rem; /* Narrow padding for the strip */
+  padding: 1rem 0; /* Minimal padding */
   align-items: center;
+  /* Ensure flex container allows centering */
+  display: flex;
+  flex-direction: column;
+}
+
+/* New class for the vertical text */
+.vertical-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.15em; /* Slightly wider tracking for vertical legibility */
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  /* Critical: 'auto' margin perfectly centers it vertically and horizontally in the flex panel */
+  margin: auto;
+  line-height: 1;
+}
+
+.vertical-label:hover {
+  color: var(--text);
 }
 
 .panel-header {
