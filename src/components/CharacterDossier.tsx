@@ -38,8 +38,10 @@ const buildPath = (points: { x: number; y: number }[], xScale: LinearScale, ySca
 
 function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }: Props) {
   const chartWidth = 400
-  const chartHeight = 150
-  const chartPadding = 36
+  const chartHeight = 160
+  const chartMargin = { top: 18, right: 16, bottom: 40, left: 72 }
+  const innerWidth = chartWidth - chartMargin.left - chartMargin.right
+  const innerHeight = chartHeight - chartMargin.top - chartMargin.bottom
 
   const renderChart = (
     label: string,
@@ -61,8 +63,11 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
       return null
     }
 
-    const xScale = d3.scaleLinear().domain([0, Math.max(entries.length - 1, 1)]).range([chartPadding, chartWidth - chartPadding])
-    const yScale = d3.scaleLinear().domain([0, 100]).range([chartHeight - chartPadding, chartPadding])
+    const xScale = d3
+      .scaleLinear()
+      .domain([0, Math.max(entries.length - 1, 1)])
+      .range([chartMargin.left, chartMargin.left + innerWidth])
+    const yScale = d3.scaleLinear().domain([0, 100]).range([chartMargin.top + innerHeight, chartMargin.top])
 
     const path = buildPath(entries, xScale, yScale)
     const xTicks = entries.map((entry, index) => ({ value: index + 1, x: entry.x }))
@@ -86,36 +91,49 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
           <g className="chart-grid">
             {d3.ticks(0, 100, 4).map((tick) => (
               <g key={tick}>
-                <line x1={chartPadding} x2={chartWidth - chartPadding} y1={yScale(tick)} y2={yScale(tick)} />
-                <text x={chartPadding - 10} y={yScale(tick)} dominantBaseline="middle">
+                <line x1={chartMargin.left} x2={chartMargin.left + innerWidth} y1={yScale(tick)} y2={yScale(tick)} />
+                <text x={chartMargin.left - 12} y={yScale(tick)} dominantBaseline="middle" textAnchor="end">
                   {tick}
                 </text>
               </g>
             ))}
           </g>
           <g className="chart-axes">
-            <line x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - chartPadding + 8} y2={chartHeight - chartPadding + 8} stroke="rgba(255,255,255,0.4)" />
+            <line
+              x1={chartMargin.left}
+              x2={chartMargin.left + innerWidth}
+              y1={chartMargin.top + innerHeight + 10}
+              y2={chartMargin.top + innerHeight + 10}
+              stroke="rgba(255,255,255,0.4)"
+            />
             {xTicks.map((tick) => (
-              <text key={tick.value} x={xScale(tick.x)} y={chartHeight - chartPadding + 22} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.8)">
+              <text
+                key={tick.value}
+                x={xScale(tick.x)}
+                y={chartMargin.top + innerHeight + 24}
+                textAnchor="middle"
+                fontSize={10}
+                fill="rgba(255,255,255,0.8)"
+              >
                 {tick.value}
               </text>
             ))}
-            <text x={chartWidth / 2} y={chartHeight - 4} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
+            <text x={(chartMargin.left + innerWidth) / 2} y={chartHeight - 6} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
               Scene number
             </text>
-            <text x={chartPadding - 20} y={chartPadding - 8} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+            <text x={chartMargin.left - 8} y={chartMargin.top} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {topLabel}
             </text>
-            <text x={chartPadding - 20} y={chartHeight - chartPadding + 4} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
+            <text x={chartMargin.left - 8} y={chartMargin.top + innerHeight} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
               {bottomLabel}
             </text>
             <text
-              x={chartPadding - 36}
-              y={(chartHeight - chartPadding + chartPadding) / 2}
+              x={chartMargin.left - 44}
+              y={chartMargin.top + innerHeight / 2}
               textAnchor="middle"
               fontSize={11}
               fill="rgba(255,255,255,0.7)"
-              transform={`rotate(-90 ${chartPadding - 36} ${(chartHeight - chartPadding + chartPadding) / 2})`}
+              transform={`rotate(-90 ${chartMargin.left - 44} ${chartMargin.top + innerHeight / 2})`}
             >
               Alignment
             </text>
