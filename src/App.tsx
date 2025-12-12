@@ -206,7 +206,7 @@ function App() {
   const [loadingStoryId, setLoadingStoryId] = useState<string | null>(null)
   const [sceneIndex, setSceneIndex] = useState(0)
   const [selectedCharacter, setSelectedCharacter] = useState<{ id: string; stats?: CharacterSceneStats } | null>(null)
-  const [isLibraryCollapsed, setIsLibraryCollapsed] = useState(false)
+  const [isLibraryCollapsed, setIsLibraryCollapsed] = useState(true)
 
   const activeStory = useMemo(() => STORIES.find((story) => story.id === activeId) ?? STORIES[0], [activeId])
   const activeScenes = storyScenes[activeId]
@@ -374,13 +374,13 @@ function App() {
               ))}
             </ul>
           ) : (
-            <div
-              className="vertical-label"
+            <div 
+              className="vertical-label" 
               onClick={() => setIsLibraryCollapsed(false)}
-              style={{
-                writingMode: 'vertical-rl',
-                textOrientation: 'mixed',
-                transform: 'rotate(180deg)',
+              style={{ 
+                writingMode: 'vertical-rl', 
+                textOrientation: 'mixed', 
+                transform: 'rotate(180deg)', 
                 marginTop: '2rem',
                 cursor: 'pointer',
                 color: 'var(--muted-foreground)',
@@ -389,6 +389,7 @@ function App() {
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 alignSelf: 'center',
+                lineHeight: '1', /* FIX: Ensures text is perfectly centered in the strip */
               }}
             >
               Story Index
