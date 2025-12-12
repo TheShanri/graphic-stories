@@ -72,7 +72,7 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     const path = buildPath(entries, xScale, yScale)
     
     // FIX: Format labels to A#S# and calculate dynamic font size
-    const xTicks = entries.map((entry, index) => ({
+    const xTicks = entries.map((entry) => ({
       label: entry.scene.replace(/Act\s+(\d+).*?Scene\s+(\d+).*/i, 'A$1S$2'),
       x: entry.x,
     }))
