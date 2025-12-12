@@ -286,14 +286,15 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
         <defs>
           <marker
             id="arrowhead"
-            viewBox="0 0 12 12"
-            refX="10"
-            refY="6"
-            markerWidth="12"
-            markerHeight="12"
+            viewBox="0 0 10 10"
+            refX="29"
+            refY="5"
+            markerWidth="10"
+            markerHeight="10"
             orient="auto"
+            markerUnits="userSpaceOnUse"
           >
-            <path d="M0,0 L12,6 L0,12 L3.5,6 Z" fill="rgba(255,255,255,0.75)" />
+            <path d="M0,0 L10,5 L0,10 L3,5 Z" fill="rgba(255,255,255,0.75)" />
           </marker>
         </defs>
         <g className="graph-links" stroke="rgba(255,255,255,0.45)">
