@@ -10,4 +10,12 @@ export default defineConfig({
       d3: path.resolve(__dirname, 'src/vendor/d3-lite.ts'),
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        about: path.resolve(__dirname, 'about.html'),
+      },
+    },
+  },
 })
