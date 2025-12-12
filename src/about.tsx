@@ -5,38 +5,38 @@ import './about.css'
 
 const pillars = [
   {
-    title: 'Narrative Science',
-    body: 'We pair qualitative methods with spatial analytics so each story stays grounded in lived experiences and measurable change.',
+    title: 'Character Interaction Networks',
+    body: 'We model stories as dynamic social graphs, where nodes represent characters and directed edges encode the temporal-causal structure of interactions, capturing who interacts with whom and how often.',
   },
   {
-    title: 'Responsible Technology',
-    body: 'Every prototype documents data provenance, bias checks, and accessibility guardrails before moving into production.',
+    title: 'Archetypometrics Framework',
+    body: 'Beyond social links, we map character psychology along three semantic dimensions: Fool–Hero (competence), Angel–Demon (morality), and Traditionalist–Adventurer (openness).',
   },
   {
-    title: 'Studio Partnerships',
-    body: 'Graphic Stories works with studios, labs, and civic partners to co-design visual languages that travel beyond the screen.',
+    title: 'Event Detection via Transformation',
+    body: 'We identify key narrative events not just by plot points, but as inflection points where character archetype trajectories shift sharply, grounding plot structure in psychological change.',
   },
 ]
 
 const methods = [
   {
-    title: 'Field Kits',
-    detail: 'Interview prompts, sketch templates, and sample consent language for on-site data collection.',
+    title: 'LLM-Powered Annotation',
+    detail: 'A two-stage pipeline extracts relationship operations and scores archetypes from raw text, generating structured JSON data for scene-wise analysis.',
   },
   {
-    title: 'Data Loom',
-    detail: 'A lightweight processing pipeline using TypeScript, Vite, and SWC to generate ready-to-embed visual layers.',
+    title: 'Force-Directed Simulation',
+    detail: 'A custom physics engine built with React and D3 that prevents node overlap and uses quadratic Bézier curves to visualize concurrent character interactions.',
   },
   {
-    title: 'Story Reviews',
-    detail: 'Peer feedback sessions that check clarity, ethics, and resonance before a story ships.',
+    title: 'Archetype Time Series',
+    detail: 'Detailed character dossiers that visualize the evolution of personality scores across scenes, linking quantitative metrics to LLM-generated textual justifications.',
   },
 ]
 
 const milestones = [
-  { year: '2024', detail: 'Research consortium founded with three academic partners and five civic studios.' },
-  { year: '2025', detail: 'Released Stories Viewer alpha with live filtering and temporal annotations.' },
-  { year: '2026', detail: 'Planning residency program and publishing the first open curriculum for narrative visualization.' },
+  { year: '2024', detail: 'Developed the Graphic Stories dashboard using React, TypeScript, and Vite for high-performance client-side rendering.' },
+  { year: '2025', detail: 'Published "Characters and Archetypes for Story Decomposition," introducing the hybrid network-archetype framework.' },
+  { year: '2026', detail: 'Implementing formal change-point detection algorithms to automatically segment stories based on archetype trajectory curvature.' },
 ]
 
 function AboutPage() {
@@ -47,8 +47,9 @@ function AboutPage() {
           <p className="eyebrow">Graphic Stories</p>
           <h1>About the Project</h1>
           <p className="lede">
-            Graphic Stories is an academic initiative focused on building collaborative tooling for data-rich narratives. We
-            merge speculative design with rigorous research workflows to help teams move from insights to compelling stories.
+            Graphic Stories is a computational narrative analysis system that decomposes stories into interpretable
+            interaction networks and character archetype dynamics. We combine large language models with network science to
+            explore how characters evolve over time.
           </p>
         </div>
         <nav className="primary-nav">
@@ -63,19 +64,19 @@ function AboutPage() {
         <article>
           <h2>What we are building</h2>
           <p>
-            Graphic Stories delivers an open toolkit for visual storytelling — from modular canvases for experimentation to
-            ready-to-teach curricula. The project is currently incubated inside a consortium of universities and cultural
-            institutions that care deeply about equitable technology.
+            We are building a hybrid architecture for automated story decomposition. By extracting relationship operations
+            and tracking 'Fool vs. Hero', 'Angel vs. Demon', and 'Traditionalist vs. Adventurer' scores, our system
+            visualizes the deep semantic structure of narratives.
           </p>
         </article>
         <article>
           <h2>How to collaborate</h2>
           <p>
-            We host seasonal studios, partner residencies, and fellowships for emerging scholars. If you are interested in
-            piloting our viewer, participating in critique sessions, or commissioning custom research, reach out to our
-            coordination team.
+            Our research focuses on explainable narrative analysis and adaptive storytelling systems. We are actively
+            expanding our dataset beyond Shakespeare to include diverse media and testing our archetype scoring against
+            human annotations.
           </p>
-          <a className="cta" href="mailto:hello@graphicstories.edu">
+          <a className="cta" href="mailto:contact@graphicstories.vercel.app">
             Contact the team →
           </a>
         </article>
