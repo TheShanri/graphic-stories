@@ -99,8 +99,11 @@
 }
 
 .stories-panel.collapsed {
-  padding: 1.5rem 0.5rem; /* Narrow padding for the strip */
+  padding: 0.9rem 0.5rem; /* Narrow padding for the strip */
   align-items: center;
+  width: min-content; /* Shrink the purple rail to hug the label */
+  min-width: 0;
+  align-self: flex-start;
 }
 
 .panel-header {
