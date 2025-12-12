@@ -33,12 +33,6 @@ const methods = [
   },
 ]
 
-const milestones = [
-  { year: '2024', detail: 'Developed the Graphic Stories dashboard using React, TypeScript, and Vite for high-performance client-side rendering.' },
-  { year: '2025', detail: 'Published "Characters and Archetypes for Story Decomposition," introducing the hybrid network-archetype framework.' },
-  { year: '2026', detail: 'Implementing formal change-point detection algorithms to automatically segment stories based on archetype trajectory curvature.' },
-]
-
 function AboutPage() {
   return (
     <div className="about-shell">
@@ -105,22 +99,6 @@ function AboutPage() {
             </article>
           ))}
         </div>
-      </section>
-
-      <section className="milestones">
-        <header>
-          <p className="eyebrow">Roadmap</p>
-          <h2>Milestones</h2>
-          <p>Transparent checkpoints keep collaborators aligned and show how the viewer evolves semester by semester.</p>
-        </header>
-        <ul>
-          {milestones.map((item) => (
-            <li key={item.year}>
-              <span className="year">{item.year}</span>
-              <p>{item.detail}</p>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <footer className="about-footer">
