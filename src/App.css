@@ -67,18 +67,32 @@
 
 @media (min-width: 1024px) {
   .workspace {
-    /* minmax(0, 1fr) prevents the column from blowing out the viewport width */
+    /* Default width: Sidebar takes 240px-300px */
     grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
-    align-items: start; /* Changed from stretch to prevent height forcing */
+    align-items: start;
+    transition: grid-template-columns 300ms ease; /* Smooth transition */
+  }
+
+  /* When library is collapsed, first column shrinks to 60px */
+  .workspace.library-collapsed {
+    grid-template-columns: 60px minmax(0, 1fr);
   }
 }
 
-.stories-panel,
-.visualization-panel {
+.stories-panel {
   background: var(--panel);
   border-radius: 1.75rem;
   padding: 1.75rem;
   box-shadow: var(--panel-shadow);
+  transition: padding 300ms ease; /* Animate padding changes */
+  overflow: hidden; /* Hide content during transition */
+  display: flex;
+  flex-direction: column;
+}
+
+.stories-panel.collapsed {
+  padding: 1.5rem 0.5rem; /* Narrow padding for the strip */
+  align-items: center;
 }
 
 .panel-header {
@@ -86,6 +100,14 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  min-height: 42px; /* Prevent jumping when text is removed */
+}
+
+.visualization-panel {
+  background: var(--panel);
+  border-radius: 1.75rem;
+  padding: 1.75rem;
+  box-shadow: var(--panel-shadow);
 }
 
 h2 {
