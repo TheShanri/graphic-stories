@@ -432,17 +432,7 @@ function App() {
             </div>
           </div>
           <article className="story-details">
-            <header>
-              <p className="eyebrow">Now viewing</p>
-              <h2>{activeStory.title}</h2>
-              <p className="authors">{activeStory.authors}</p>
-            </header>
-            {activeStoryError ? (
-              <p className="story-description error">{activeStoryError}</p>
-            ) : (
-              <p className="story-description">{activeStory.description}</p>
-            )}
-
+            {/* Moved Scene Controls to the top */}
             <div className="scene-controls">
               <div>
                 <p className="eyebrow">Scene navigation</p>
@@ -461,6 +451,18 @@ function App() {
                 </button>
               </div>
             </div>
+
+            <header>
+              <p className="eyebrow">Now viewing</p>
+              <h2>{activeStory.title}</h2>
+              <p className="authors">{activeStory.authors}</p>
+            </header>
+            
+            {activeStoryError ? (
+              <p className="story-description error">{activeStoryError}</p>
+            ) : (
+              <p className="story-description">{activeStory.description}</p>
+            )}
 
             <dl className="data-points">
               <div>
