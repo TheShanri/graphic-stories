@@ -39,7 +39,7 @@ const buildPath = (points: { x: number; y: number }[], xScale: LinearScale, ySca
 function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }: Props) {
   const chartWidth = 400
   const chartHeight = 160
-  const chartMargin = { top: 18, right: 16, bottom: 40, left: 90 }
+  const chartMargin = { top: 18, right: 16, bottom: 60, left: 90 }
   const innerWidth = chartWidth - chartMargin.left - chartMargin.right
   const innerHeight = chartHeight - chartMargin.top - chartMargin.bottom
 
@@ -72,10 +72,13 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     const path = buildPath(entries, xScale, yScale)
     
     // FIX: Format labels to A#S# and calculate dynamic font size
-    const xTicks = entries.map((entry) => ({
-      label: entry.scene.replace(/Act\s+(\d+).*?Scene\s+(\d+).*/i, 'A$1S$2'),
-      x: entry.x,
-    }))
+    const xTicks = entries.map((entry) => {
+      const match = entry.scene.match(/Act\s*(\d+).*?Scene(?:s)?\s*(\d+)/i)
+      return {
+        label: match ? `A${match[1]}S${match[2]}` : entry.scene,
+        x: entry.x,
+      }
+    })
     
     // Simple heuristic to scale font down if there are many scenes
     const tickFontSize = Math.min(10, Math.max(6, innerWidth / entries.length / 1.5))
@@ -119,8 +122,10 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
               <text
                 key={i}
                 x={xScale(tick.x)}
-                y={chartMargin.top + innerHeight + 24}
-                textAnchor="middle"
+                y={chartMargin.top + innerHeight + 10}
+                transform={`rotate(-90, ${xScale(tick.x)}, ${chartMargin.top + innerHeight + 10})`}
+                textAnchor="end"
+                dominantBaseline="middle"
                 fontSize={tickFontSize}
                 fill="rgba(255,255,255,0.8)"
               >
