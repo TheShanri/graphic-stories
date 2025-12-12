@@ -39,7 +39,7 @@ const buildPath = (points: { x: number; y: number }[], xScale: LinearScale, ySca
 function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }: Props) {
   const chartWidth = 400
   const chartHeight = 160
-  const chartMargin = { top: 18, right: 16, bottom: 40, left: 90 }
+  const chartMargin = { top: 18, right: 16, bottom: 60, left: 90 }
   const innerWidth = chartWidth - chartMargin.left - chartMargin.right
   const innerHeight = chartHeight - chartMargin.top - chartMargin.bottom
 
@@ -70,7 +70,19 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
     const yScale = d3.scaleLinear().domain([0, 100]).range([chartMargin.top + innerHeight, chartMargin.top])
 
     const path = buildPath(entries, xScale, yScale)
-    const xTicks = entries.map((entry, index) => ({ value: index + 1, x: entry.x }))
+    
+    // FIX: Format labels to A#S# and calculate dynamic font size
+    const xTicks = entries.map((entry) => {
+      const match = entry.scene.match(/Act\s*(\d+).*?Scene(?:s)?\s*(\d+)/i)
+      return {
+        label: match ? `A${match[1]}S${match[2]}` : entry.scene,
+        x: entry.x,
+      }
+    })
+    
+    // Simple heuristic to scale font down if there are many scenes
+    const tickFontSize = Math.min(10, Math.max(6, innerWidth / entries.length / 1.5))
+
     const topLabel = firstStat?.rightLabel ?? label.split('→')[1]?.trim() ?? 'High'
     const bottomLabel = firstStat?.leftLabel ?? label.split('→')[0]?.trim() ?? 'Low'
 
@@ -106,21 +118,22 @@ function CharacterDossier({ characterId, arc, currentStats, sceneName, onClose }
               y2={chartMargin.top + innerHeight + 10}
               stroke="rgba(255,255,255,0.4)"
             />
-            {xTicks.map((tick) => (
+            {xTicks.map((tick, i) => (
               <text
-                key={tick.value}
+                key={i}
                 x={xScale(tick.x)}
-                y={chartMargin.top + innerHeight + 24}
-                textAnchor="middle"
-                fontSize={10}
+                y={chartMargin.top + innerHeight + 10}
+                transform={`rotate(-90, ${xScale(tick.x)}, ${chartMargin.top + innerHeight + 10})`}
+                textAnchor="end"
+                dominantBaseline="middle"
+                fontSize={tickFontSize}
                 fill="rgba(255,255,255,0.8)"
               >
-                {tick.value}
+                {tick.label}
               </text>
             ))}
-            <text x={(chartMargin.left + innerWidth) / 2} y={chartHeight - 6} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.85)">
-              Scene number
-            </text>
+            
+            {/* Removed 'Scene number' label as requested */}
 
             {/* Top Label: Moved up 12px to avoid overlapping "100" */}
             <text x={chartMargin.left - 8} y={chartMargin.top - 12} textAnchor="end" fontSize={11} fill="rgba(255,255,255,0.9)">
