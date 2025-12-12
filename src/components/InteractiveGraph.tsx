@@ -460,7 +460,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
                               height: 12,
                               borderRadius: 999,
                               /* FIX: Warm gradient background for the "Left" archetype */
-                              background: 'linear-gradient(90deg, rgba(255, 85, 85, 0.4), rgba(255, 130, 85, 0.4))',
+                              background: 'linear-gradient(90deg, rgba(255, 190, 120, 0.45), rgba(255, 145, 90, 0.55))',
                               overflow: 'hidden',
                             }}
                           >
