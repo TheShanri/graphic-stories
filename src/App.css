@@ -473,6 +473,31 @@ h2 {
   max-height: 240px;
 }
 
+/* Custom Scrollbar for Graph Data Panel */
+.graph-json::-webkit-scrollbar {
+  width: 6px;
+  height: 6px; /* Also style horizontal scrollbar */
+}
+
+.graph-json::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0.5rem;
+}
+
+.graph-json::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 99px;
+}
+
+.graph-json::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Ensure corner where scrollbars meet is transparent */
+.graph-json::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .graph-placeholder {
   margin: 0;
   color: var(--muted-foreground);
