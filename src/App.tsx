@@ -374,23 +374,10 @@ function App() {
               ))}
             </ul>
           ) : (
-            <div 
-              className="vertical-label" 
+            <div
+              className="vertical-label"
               onClick={() => setIsLibraryCollapsed(false)}
-              style={{ 
-                writingMode: 'vertical-rl', 
-                textOrientation: 'mixed', 
-                transform: 'rotate(180deg)', 
-                marginTop: '2rem',
-                cursor: 'pointer',
-                color: 'var(--muted-foreground)',
-                fontWeight: 600,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                whiteSpace: 'nowrap',
-                alignSelf: 'center',
-                lineHeight: '1', /* FIX: Ensures text is perfectly centered in the strip */
-              }}
+              title="Expand Library"
             >
               Story Index
             </div>
