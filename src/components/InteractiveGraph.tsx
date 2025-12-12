@@ -397,6 +397,7 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
             </g>
           ))}
         </g>
+      </svg>
       {hoveredNodeId && hoveredNodePosition ? (
         (() => {
           const node = positionLookup.get(hoveredNodeId)
@@ -491,7 +492,6 @@ function InteractiveGraph({ graph, onNodeClick }: Props) {
           )
         })()
       ) : null}
-      </svg>
       {hoveredEdge && hoveredEdge.label ? (
         <div
           className="edge-tooltip"
